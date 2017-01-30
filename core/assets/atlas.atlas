@@ -1,0 +1,139 @@
+
+atlas.png
+size: 256,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+bot
+  rotate: false
+  xy: 100, 94
+  size: 54, 30
+  orig: 54, 30
+  offset: 0, 0
+  index: -1
+bullet
+  rotate: false
+  xy: 216, 85
+  size: 3, 3
+  orig: 3, 3
+  offset: 0, 0
+  index: -1
+buttonPlay
+  rotate: false
+  xy: 2, 64
+  size: 74, 26
+  orig: 74, 26
+  offset: 0, 0
+  index: -1
+coin
+  rotate: false
+  xy: 74, 30
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+enot
+  rotate: false
+  xy: 2, 92
+  size: 96, 32
+  orig: 96, 32
+  offset: 0, 0
+  index: -1
+fon
+  rotate: false
+  xy: 2, 13
+  size: 34, 34
+  orig: 34, 34
+  offset: 0, 0
+  index: -1
+fon2
+  rotate: false
+  xy: 156, 90
+  size: 34, 34
+  orig: 34, 34
+  offset: 0, 0
+  index: -1
+fon3
+  rotate: false
+  xy: 192, 90
+  size: 34, 34
+  orig: 34, 34
+  offset: 0, 0
+  index: -1
+fon4
+  rotate: false
+  xy: 38, 13
+  size: 34, 34
+  orig: 34, 34
+  offset: 0, 0
+  index: -1
+fon5
+  rotate: false
+  xy: 78, 56
+  size: 34, 34
+  orig: 34, 34
+  offset: 0, 0
+  index: -1
+hp
+  rotate: false
+  xy: 2, 2
+  size: 9, 9
+  orig: 9, 9
+  offset: 0, 0
+  index: -1
+particle
+  rotate: false
+  xy: 2, 2
+  size: 9, 9
+  orig: 9, 9
+  offset: 0, 0
+  index: -1
+pauseButton
+  rotate: false
+  xy: 146, 21
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+player
+  rotate: false
+  xy: 114, 27
+  size: 30, 65
+  orig: 30, 65
+  offset: 0, 0
+  index: -1
+rip
+  rotate: false
+  xy: 2, 49
+  size: 62, 13
+  orig: 62, 13
+  offset: 0, 0
+  index: -1
+soundButtonOff
+  rotate: false
+  xy: 146, 55
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+soundButtonOn
+  rotate: false
+  xy: 181, 55
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+wood
+  rotate: false
+  xy: 228, 92
+  size: 23, 32
+  orig: 23, 32
+  offset: 0, 0
+  index: -1
+wood1
+  rotate: false
+  xy: 180, 21
+  size: 23, 32
+  orig: 23, 32
+  offset: 0, 0
+  index: -1
