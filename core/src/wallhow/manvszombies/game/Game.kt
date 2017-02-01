@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.utils.viewport.Viewport
 import com.google.inject.*
 import wallhow.acentauri.process.ProcessManager
-import wallhow.acentauri.utils.APlayer
+import wallhow.acentauri.utils.ozmod.APlayer
 import wallhow.acentauri.utils.TTFFont
 import wallhow.manvszombies.game.processes.ProcessGame
 import wallhow.manvszombies.game.processes.ProcessMenu

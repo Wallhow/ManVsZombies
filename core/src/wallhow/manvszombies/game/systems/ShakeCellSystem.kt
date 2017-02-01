@@ -12,7 +12,7 @@ import wallhow.acentauri.ashley.components.extension.position
 import wallhow.manvszombies.game.components.CTimer
 
 /**
- * Created by naxo1 on 28.01.2017.
+ * Created by wallhow on 28.01.2017.
  */
 class ShakeCellSystem @Inject constructor() : IteratingSystem(Family.all(CShake::class.java).get()){
     override fun processEntity(entity: Entity, deltaTime: Float) {
