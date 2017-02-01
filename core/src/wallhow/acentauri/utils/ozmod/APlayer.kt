@@ -1,4 +1,4 @@
-package wallhow.acentauri.utils
+package wallhow.acentauri.utils.ozmod
 
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.files.FileHandle
@@ -13,7 +13,7 @@ import wallhow.acentauri.utils.ozmod.OZMod
 class APlayer {
     val ozMod = OZMod()
     private var frequency = intArrayOf(44100,48000,96000)
-    private var listMusic = ObjectMap<String,FileHandle>()
+    private var listMusic = ObjectMap<String, FileHandle>()
     var chipPlayer: ChipPlayer? = null
 
     init {
