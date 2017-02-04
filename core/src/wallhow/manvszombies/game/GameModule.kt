@@ -73,8 +73,7 @@ class GameModule(game: Game) : Module {
         return Systems(listOf(
                 PlayerControllerSystem::class.java,
                 //CollideDetectedSystem::class.java,
-                MovementSystem::class.java,
-                DrawDebugSystem::class.java,
+                MovementSystem::class.java,DrawDebugSystem::class.java,
                 DrawImageSystem::class.java,
                 DrawHealthSystem::class.java,
                 TimerSystem::class.java,

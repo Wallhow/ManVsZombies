@@ -28,8 +28,8 @@ class ShakeCellSystem @Inject constructor() : IteratingSystem(Family.all(CShake:
         entity.position.x = CShake[entity].prePosition.x
         entity.position.y = CShake[entity].prePosition.y
 
-        val xShake = MathUtils.random(-4,4)
-        val yShake = MathUtils.random(-4,4)
+        val xShake = MathUtils.random(-2,2)
+        val yShake = MathUtils.random(-2,2)
 
         entity.position.x+=xShake
         entity.position.y+=yShake

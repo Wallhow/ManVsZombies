@@ -22,14 +22,18 @@ class DrawDebugSystem @Inject constructor(val camera: OrthographicCamera, val ba
         .get()){
     val font : BitmapFont
     val p : Texture
+    val colorGrid : Color
     init {
         font = TTFFont("assets/pixel.ttf").get(24)
-        p = Texture(Pixmap(Gdx2DPixmap.newPixmap(1,1,Gdx2DPixmap.GDX2D_FORMAT_RGBA8888).apply { setPixel(1,1,Color.WHITE.toIntBits()) }))
-
+        val pixel = Pixmap(1, 1, Pixmap.Format.RGBA8888)
+        pixel.setColor(Color.WHITE)
+        pixel.fill()
+        p = Texture(pixel)
+        colorGrid = Color.DARK_GRAY.cpy()
     }
     override fun processEntity(entity: Entity, deltaTime: Float) {
         //batch.drawBox(CPosition[entity].position.x,CPosition[entity].position.y,CImage[entity].width,CImage[entity].height,
-                //5f,Color.YELLOW)
+               // 5f,Color.YELLOW)
     }
 
     fun SpriteBatch.drawBox(x:Float,y:Float,width: Float,height: Float,size: Float,color: Color) {
@@ -54,13 +58,13 @@ class DrawDebugSystem @Inject constructor(val camera: OrthographicCamera, val ba
         val cellSize = 40
         val w = 400 / cellSize
         val h = 600 / cellSize
-        batch.color = Color.GRAY
+        batch.color = colorGrid
         for(x in 0..w) {
             batch.draw(p,x*cellSize.toFloat(),0f,5f,600f)
         }
         for ( y in 0..h) {
             batch.draw(p,0f,y*cellSize.toFloat(),400f,5f)
         }
-        batch.color = Color.WHITE
+        batch.color = Color.CLEAR
     }
 }

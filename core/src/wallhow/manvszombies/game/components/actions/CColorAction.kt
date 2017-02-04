@@ -14,7 +14,6 @@ class CColorAction(val time: Float,val color: Color) : CAction {
 
     override fun update(entity: Entity, delta: Float) {
         currentTime+=delta
-        println(currentTime)
         if(currentTime>=time) {
             CImage[entity].color=color
             ready = true

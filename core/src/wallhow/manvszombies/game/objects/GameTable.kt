@@ -2,6 +2,8 @@ package wallhow.manvszombies.game.objects
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Array
@@ -20,6 +22,7 @@ class GameTable ( worldWidth: Float, worldHeight: Float) {
     val height: Int
     val defCellSize = 40f
 
+
     val cells : Cells
     init {
         width = (worldWidth / defCellSize).toInt()
@@ -27,10 +30,11 @@ class GameTable ( worldWidth: Float, worldHeight: Float) {
 
         cells = Cells(width,height,defCellSize)
 
-        add(Cell.CellType.TYPE_1,2)
-        add(Cell.CellType.TYPE_2,3)
-        add(Cell.CellType.TYPE_3,5)
-        //add(Cell.CellType.TYPE_3,-1)
+        add(Cell.Type.T4X4,2)
+        add(Cell.Type.T2X2,4)
+        add(Cell.Type.T1X1,3)
+        //add(Cell.Type.T2X2,-1)
+        //add(Cell.Type.T1X1,-1)
 
         cells.cells.forEach {
             Game.engine.addEntity(it)
@@ -38,7 +42,7 @@ class GameTable ( worldWidth: Float, worldHeight: Float) {
 
     }
 
-    fun add(type: Cell.CellType, count: Int) {
+    fun add(type: Cell.Type, count: Int) {
         var iW = 0
         val posBig = cells.getCellFree(type)
         if(count < 0) {
@@ -60,6 +64,7 @@ class GameTable ( worldWidth: Float, worldHeight: Float) {
         val paddingY = 1
         val paddingX = 1
         val cells : Array<Cell>
+        val cellTexture = Texture("assets/cell.png")
         private val cellsFlags : kotlin.Array<kotlin.Array<Boolean>>
 
         init {
@@ -83,18 +88,18 @@ class GameTable ( worldWidth: Float, worldHeight: Float) {
             }
 
         }
-        fun addCell(type: Cell.CellType, x:Float, y:Float) {
+        fun addCell(type: Cell.Type, x:Float, y:Float) {
             val cell = Cell(type)
             val size = type.size
             cell.add(CPosition(Vector2(cellSizePx*x,cellSizePx*y)).apply { zIndex = Integer.MIN_VALUE})
-            cell.add(CImage(Game.atlas.findRegion("fon4"),cellSizePx*size.x,cellSizePx*size.y))
+            cell.add(CImage(TextureRegion(cellTexture),cellSizePx*size.x,cellSizePx*size.y))
 
             add(cell,x.toInt(),y.toInt())
         }
-        fun addCell(type: Cell.CellType, position: Vector2) {
+        fun addCell(type: Cell.Type, position: Vector2) {
             addCell(type,position.x,position.y)
         }
-        fun getCellFree(type: Cell.CellType) : Array<Vector2> {
+        fun getCellFree(type: Cell.Type) : Array<Vector2> {
             val pos = Array<Vector2>()
 
             for (x in paddingX..MathUtils.ceilPositive(coll / type.size.x) -1 -paddingX) {
@@ -119,7 +124,7 @@ class GameTable ( worldWidth: Float, worldHeight: Float) {
             return true
         }
 
-        fun getCells(type: Cell.CellType) : Array<Cell> {
+        fun getCells(type: Cell.Type) : Array<Cell> {
             val array = Array<Cell>()
 
             for(i in 0..cells.size-1) {
@@ -133,7 +138,7 @@ class GameTable ( worldWidth: Float, worldHeight: Float) {
     }
 
 
-    class Cell(defType: CellType) : Entity() {
+    class Cell(defType: Type) : Entity() {
         private val objects: Array<Entity>
         val cellComponent: CellComponent
 
@@ -144,22 +149,18 @@ class GameTable ( worldWidth: Float, worldHeight: Float) {
             add(CHealth(defType.startHealth))
         }
 
-        class CellComponent(val type: CellType) : Component {
+        class CellComponent(val type: Type) : Component {
             companion object : ComponentResolver<CellComponent>(CellComponent::class.java)
 
         }
 
-        enum class CellType(var startHealth: Float, val size: Vector2) {
-            TYPE_1(10f, Vector2(4f, 4f)),
-            TYPE_2(5f, Vector2(2f,2f)),
-            TYPE_3(2f, Vector2(1f,1f)),
+        enum class Type(var startHealth: Float, val size: Vector2) {
+            T4X4(Balance.FieldHpV3.toFloat(), Vector2(4f, 4f)),
+            T2X2(Balance.FieldHpV2.toFloat(), Vector2(2f,2f)),
+            T1X1(Balance.FieldHpV1.toFloat(), Vector2(1f,1f)),
             TYPE_5(15f, Vector2(5f,3f))
         }
     }
-}
-
-class BigCell {
-
 }
 
 
