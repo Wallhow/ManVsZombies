@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.google.inject.Inject
-import wallhow.manvszombies.game.GameTable
+import wallhow.manvszombies.game.objects.GameTable
 import wallhow.manvszombies.game.components.CHealth
 import wallhow.manvszombies.game.components.CKick
 

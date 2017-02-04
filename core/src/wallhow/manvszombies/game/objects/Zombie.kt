@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.viewport.Viewport
 import wallhow.acentauri.ashley.components.CImage
 import wallhow.manvszombies.game.Game
-import wallhow.manvszombies.game.GameTable
+import wallhow.manvszombies.game.objects.GameTable
 import wallhow.manvszombies.game.components.CHealth
 import wallhow.manvszombies.game.components.CKick
 

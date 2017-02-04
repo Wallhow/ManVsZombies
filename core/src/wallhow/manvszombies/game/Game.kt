@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.utils.viewport.Viewport
 import com.google.inject.*
+import com.kotcrab.vis.ui.VisUI
 import wallhow.acentauri.process.ProcessManager
 import wallhow.acentauri.utils.ozmod.APlayer
 import wallhow.acentauri.utils.TTFFont
@@ -35,19 +36,14 @@ class Game : ApplicationAdapter() {
     }
 
     override fun create() {
+
+        VisUI.load(VisUI.SkinScale.X2) // ГУЙ
+
         audioPlayer.addMusic("assets/sounds/test4.xm","music")
         audioPlayer.addMusic("assets/sounds/test.mod","music1")
         //audioPlayer.play("music1")
-        //vkGameService.auth("1e2f0109bec113eb7b")
-        //vkGameService.auth("f3a104999a5fe39dda")
 
         injector = Guice.createInjector(GameModule(this))
-
-        //println(vkGameService.getLevel())
-        //vkGameService.setLevel(6)
-
-        //println(vkGameService.getRecords(false)[0].toString())
-        println("<-- -->\n")
 
         spriteBatch = SpriteBatch()
 
@@ -81,6 +77,7 @@ class Game : ApplicationAdapter() {
     }
     override fun dispose() {
         pManager.dispose()
+        VisUI.dispose()
     }
 
     companion object {
@@ -107,12 +104,4 @@ class Game : ApplicationAdapter() {
         val viewport : Viewport
             get() = injector.getInstance(Viewport::class.java)
     }
-}
-
-fun TextButton.TextButtonStyle.setAllColor(color: Color) {
-    this.downFontColor = color
-    this.checkedFontColor = color
-    this.disabledFontColor = color
-    this.fontColor = Color.DARK_GRAY
-    this.overFontColor = color
 }
