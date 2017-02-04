@@ -31,8 +31,8 @@ class Zombie (val type: TypeZombie, val cell: GameTable.Cell) : Bot() {
                 val x = MathUtils.random(0f,view.worldWidth - CImage[this].width)
                 val y = MathUtils.random(view.worldHeight,view.worldHeight + CImage[this].height*10)
                 createPosition(Vector2(x,y))
-                add(CHealth(2f).apply { draw = false })
-                add(CKick(0.35f,5f,cell))
+                add(CHealth(Balance.MobHpV2.toFloat()).apply { draw = false })
+                add(CKick(Balance.Effect.MobV2.force.toFloat(),Balance.Effect.MobV2.timeForce,cell))
                 add(ZombieGreen())
                 //createMovement(Vector2(0f,-1f),45f)
             }
@@ -47,8 +47,8 @@ class Zombie (val type: TypeZombie, val cell: GameTable.Cell) : Bot() {
                 val x = MathUtils.random(0f,view.worldWidth - CImage[this].width)
                 val y = MathUtils.random(view.worldHeight,view.worldHeight + CImage[this].height*20)
                 createPosition(Vector2(x,y))
-                add(CHealth(1.5f).apply { draw = false })
-                add(CKick(0.2f,3.5f,cell))
+                add(CHealth(Balance.MobHpV1.toFloat()).apply { draw = false })
+                add(CKick(Balance.Effect.MobV1.force.toFloat(),Balance.Effect.MobV1.timeForce,cell))
                 add(ZombieBlue())
                 //createMovement(Vector2(0f,-1f),55f)
             }
@@ -63,8 +63,8 @@ class Zombie (val type: TypeZombie, val cell: GameTable.Cell) : Bot() {
                 val x = MathUtils.random(0f,view.worldWidth - CImage[this].width)
                 val y = MathUtils.random(view.worldHeight + CImage[this].height*4,view.worldHeight + CImage[this].height*10)
                 createPosition(Vector2(x,y))
-                add(CHealth(3f).apply { draw = false })
-                add(CKick(0.8f,7f,cell))
+                add(CHealth(Balance.MobHpV3.toFloat()).apply { draw = false })
+                add(CKick(Balance.Effect.MobV3.force.toFloat(),Balance.Effect.MobV3.timeForce,cell))
                 add(ZombieRed())
                 //createMovement(Vector2(0f,-1f),30f)
             }

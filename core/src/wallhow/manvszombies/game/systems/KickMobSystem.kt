@@ -75,7 +75,7 @@ class KickMobSystem @Inject constructor() : IteratingSystem(Family.all(CKickMob:
 
                     //Добавляем жизнь Ячейке
                     val cell = (it as Zombie).cell
-                    CHealth[cell].currentHealth++
+                    CHealth[cell].currentHealth+=50
                     if(CHealth[cell].currentHealth>CHealth[cell].maxHealth)
                         CHealth[cell].maxHealth=CHealth[cell].currentHealth
                 }

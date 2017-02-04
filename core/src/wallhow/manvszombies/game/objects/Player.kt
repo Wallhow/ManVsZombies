@@ -31,7 +31,6 @@ class Player : Entity() {
         val d = Vector2(x,y).sub(CPosition[this].position.x+CImage[this].width/2,
                 CPosition[this].position.y+CImage[this].height/2).nor()
         val a = d.angle()
-        println(a-90)
         CImage[this].rotation = a - 90
         shot(d)
     }
@@ -57,7 +56,7 @@ class Player : Entity() {
 }
 
 enum class GunType(var timeReload: Float, var force: Float, val mobType: TypeZombie) {
-    GREEN(1f,1f,TypeZombie.GREEN),
-    BLUE(1f,1f,TypeZombie.BLUE),
-    RED(1.5f,1.7f,TypeZombie.RED)
+    GREEN(1f,Balance.Effect.GunV2.force.toFloat(),TypeZombie.GREEN),
+    BLUE(1f,Balance.Effect.GunV1.force.toFloat(),TypeZombie.BLUE),
+    RED(1.5f,Balance.Effect.GunV3.force.toFloat(),TypeZombie.RED)
 }

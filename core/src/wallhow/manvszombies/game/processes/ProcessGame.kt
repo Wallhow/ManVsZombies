@@ -8,7 +8,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Value
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.utils.Timer
+import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import wallhow.acentauri.ashley.components.CPosition
 import wallhow.acentauri.ashley.components.extension.halfSize
@@ -23,6 +27,8 @@ import wallhow.manvszombies.game.objects.GunType
 import wallhow.manvszombies.game.objects.Player
 import wallhow.manvszombies.game.objects.TypeZombie
 import wallhow.manvszombies.game.objects.Zombie
+import kotlin.concurrent.timer
+import kotlin.concurrent.timerTask
 
 /**
  * Created by wallhow on 13.01.17.
@@ -34,6 +40,8 @@ class ProcessGame() : IProcess, InputAdapter() {
     private lateinit var gui: Stage
     private lateinit var input: InputMultiplexer
     private val player = Player()
+    private lateinit var bulletCount : VisLabel
+    private lateinit var currentWave : VisLabel
     override fun initialize(userInfo: Any) {
         level = Game.level
         if((userInfo as String) == "menu" || (userInfo) == "default") {
@@ -56,56 +64,48 @@ class ProcessGame() : IProcess, InputAdapter() {
             setPosition(0f,0f)
             setSize(Game.viewport.worldWidth,Game.viewport.worldHeight)
 
-            label("wave:${Game.level.levelNumber}").left().expandX().row()
-            verticalGroup {
-                fill()
-                val g = textButton("G") {
-                    color = Color.GREEN.cpy()
-                    color.a=0.7f
-                }
-                g.padRight(30f)
-                row()
-                space(10f)
-
-                val b = textButton("B"){
-                    color = Color.BLUE.cpy()
-                    color.a=0.7f
-
-                }
-                b.padRight(30f)
-                val r = textButton("R"){
-                    color = Color.RED.cpy()
-                    color.a=0.7f
-
-                }
-                r.padRight(30f).width = 100f
-
-                g.addListener {e ->
-                    if(e.isHandled) {
+            currentWave = label("wave:${Game.level.levelNumber}").apply { left().expandX().row() }.actor
+            val g = textButton("G") {
+                color = Color.GREEN.cpy()
+                color.a = 0.7f
+                padRight(40f)
+                addListener { e ->
+                    if (e.isHandled) {
                         CGun[player].gunType = GunType.GREEN
                     }
                     true
                 }
-                b.addListener {
+                debug()
+            }.expandY().expandX().bottom().right().row()
+            val b = textButton("B") {
+                color = Color.BLUE.cpy()
+                color.a = 0.7f
+                padRight(40f)
+                addCaptureListener {
                     CGun[player].gunType = GunType.BLUE
-
-
                     true
                 }
-                r.addListener {
+            }.right().space(10f).row()
+            val r = textButton("R") {
+                color = Color.RED.cpy()
+                color.a = 0.7f
+                padRight(40f)
+                addListener {
                     CGun[player].gunType = GunType.RED
                     true
                 }
+            }.right().row()
 
-            }.right().bottom().expand()
+            row().left()
+            bulletCount = label("bullet: ${CGun[player].max_bullets}/${CGun[player].bullets}").actor
             //setPosition(Game.viewport.worldWidth/2,Game.viewport.worldHeight/2)
         }.apply {  }
     }
 
     override fun load() {
-        createZombie(TypeZombie.GREEN,level.mobsCountGreen, GameTable.Cell.CellType.TYPE_2)
-        createZombie(TypeZombie.BLUE,level.mobsCountBlue, GameTable.Cell.CellType.TYPE_3)
-        createZombie(TypeZombie.RED,level.mobsCountRed, GameTable.Cell.CellType.TYPE_1)
+        createZombie(TypeZombie.GREEN,level.mobsCountGreen, GameTable.Cell.Type.T2X2)
+        createZombie(TypeZombie.BLUE,level.mobsCountBlue, GameTable.Cell.Type.T1X1)
+        createZombie(TypeZombie.RED,level.mobsCountRed, GameTable.Cell.Type.T4X4)
 
     }
     private fun createZombieInEngine(type: TypeZombie,i : Int,cell: GameTable.Cell) {
@@ -115,7 +115,7 @@ class ProcessGame() : IProcess, InputAdapter() {
         CPosition[z].zIndex = -CPosition[z].position.y.toInt()
         Game.engine.addEntity(z)
     }
-    private fun createZombie(type: TypeZombie, count: Int,cellType: GameTable.Cell.CellType) {
+    private fun createZombie(type: TypeZombie, count: Int,cellType: GameTable.Cell.Type) {
         val arr = table.cells.getCells(cellType)
         var c = count
         var i = 0
@@ -134,10 +134,19 @@ class ProcessGame() : IProcess, InputAdapter() {
 
     override fun update(delta: Float) {
         gui.act(delta)
-
+        bulletCount.setText("bullet: ${CGun[player].max_bullets}/${CGun[player].bullets}")
+        currentWave.setText("wave:${Game.level.levelNumber}")
         if(Game.level.mobsCount<=0) {
-            //showNewWave()
+            showNewWave()
         }
+    }
+
+    private fun showNewWave() {
+        println("new Wave")
+
+        //TODO : поменять на таймер GDX
+        Game.level.levelUp()
+        load()
     }
 
 
