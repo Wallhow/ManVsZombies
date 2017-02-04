@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ManVsZombies.iml" filepath="$PROJECT_DIR$/.idea/modules/ManVsZombies.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ManVsZombiesGit.iml" filepath="$PROJECT_DIR$/.idea/modules/ManVsZombiesGit.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/core.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/desktop/desktop.iml" filepath="$PROJECT_DIR$/.idea/modules/desktop/desktop.iml" />
     </modules>

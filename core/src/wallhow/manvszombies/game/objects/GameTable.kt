@@ -1,4 +1,4 @@
-package wallhow.manvszombies.game
+package wallhow.manvszombies.game.objects
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
@@ -9,6 +9,7 @@ import com.sun.org.apache.xpath.internal.operations.Bool
 import wallhow.acentauri.ashley.components.CImage
 import wallhow.acentauri.ashley.components.CPosition
 import wallhow.acentauri.ashley.components.ComponentResolver
+import wallhow.manvszombies.game.Game
 import wallhow.manvszombies.game.components.CHealth
 
 /**
@@ -37,7 +38,7 @@ class GameTable ( worldWidth: Float, worldHeight: Float) {
 
     }
 
-    fun add(type: Cell.CellType,count: Int) {
+    fun add(type: Cell.CellType, count: Int) {
         var iW = 0
         val posBig = cells.getCellFree(type)
         if(count < 0) {
@@ -63,11 +64,11 @@ class GameTable ( worldWidth: Float, worldHeight: Float) {
 
         init {
             cells = Array()
-            cellsFlags = kotlin.Array(coll) { kotlin.Array(row) {true} }
+            cellsFlags = Array(coll) { Array(row) {true} }
 
         }
 
-        private fun add(cell: Cell, x:Int,y:Int) {
+        private fun add(cell: Cell, x:Int, y:Int) {
             val sizeX = cell.cellComponent.type.size.x
             val sizeY = cell.cellComponent.type.size.y
             if (cellsFlags[x][y]) {
@@ -82,7 +83,7 @@ class GameTable ( worldWidth: Float, worldHeight: Float) {
             }
 
         }
-        fun addCell(type: Cell.CellType,x:Float,y:Float) {
+        fun addCell(type: Cell.CellType, x:Float, y:Float) {
             val cell = Cell(type)
             val size = type.size
             cell.add(CPosition(Vector2(cellSizePx*x,cellSizePx*y)).apply { zIndex = Integer.MIN_VALUE})
@@ -90,7 +91,7 @@ class GameTable ( worldWidth: Float, worldHeight: Float) {
 
             add(cell,x.toInt(),y.toInt())
         }
-        fun addCell(type: Cell.CellType,position: Vector2) {
+        fun addCell(type: Cell.CellType, position: Vector2) {
             addCell(type,position.x,position.y)
         }
         fun getCellFree(type: Cell.CellType) : Array<Vector2> {

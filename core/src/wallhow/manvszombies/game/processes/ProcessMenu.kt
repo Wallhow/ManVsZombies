@@ -25,6 +25,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.viewport.Viewport
+import com.kotcrab.vis.ui.VisUI
+import com.kotcrab.vis.ui.widget.VisLabel
+import com.kotcrab.vis.ui.widget.VisTextButton
+import ktx.style.defaultStyle
+import ktx.style.get
+import ktx.vis.table
 import wallhow.acentauri.process.ProcessManager
 import wallhow.acentauri.process.IProcess
 import wallhow.acentauri.utils.TTFFont
@@ -65,80 +71,92 @@ class ProcessMenu : IProcess {
     }
 
     override fun initialize(userInfo: Any) {
-        val table = Table()
-        table.x = (view.worldWidth / 2f)
-        table.y = (view.worldHeight / 2f)
-
-        val pixel = Pixmap(24,24,Pixmap.Format.RGBA8888)
+        val pixel = Pixmap(24, 24, Pixmap.Format.RGBA8888)
         pixel.setColor(Color.RED)
         pixel.fill()
         texturePixel = Texture(pixel)
-        val up = TextureRegion(Texture(pixel))
 
-        val checked = TextureRegion(Texture(pixel))
-
-        pixel.setColor(Color.BLUE)
-        pixel.fill()
-        val down = TextureRegion(Texture(pixel))
-        Game.ttfFont.createFont(36, Color.BLUE).createFont(23,Color.CYAN).createFont(16,Color.OLIVE)
-        val font = Game.ttfFont.get(36)
-        val textButtonStyle = TextButton.TextButtonStyle(TextureRegionDrawable(up),
-                TextureRegionDrawable(checked),TextureRegionDrawable(down),font)
-        textButtonStyle.downFontColor = Color.RED
-        textButtonStyle.checkedFontColor = Color.RED
-        textButtonStyle.disabledFontColor = Color.RED
-        textButtonStyle.fontColor = Color.RED
-        textButtonStyle.overFontColor = Color.RED
-        textButtonStyle.pressedOffsetY = -2f
-
-        val buttonStart = TextButton(" start ",textButtonStyle)
-        val buttonRecords = TextButton(" records ",textButtonStyle)
-        val nameGame = Label("Man vs Zombies",Label.LabelStyle().apply {
-            this.font = font
-        })
-        buttonStart.label.setFontScale(2f,2f)
-        buttonStart.addListener {
-            Game.processManager.setCurrentProcess("game")
-            true
-        }
-
-        //val profile = Game.injector.getInstance(Game::class.java).vkGameService.getMyProfile()
-        //val nameUser = Label("${profile.firstName} ${profile.lastName} level ${profile.level}",Label.LabelStyle().apply {
-        //    this.font =  Game.ttfFont.get(16)
-        //})
-
-        //val rec2 = LabelList()
-        //Game.injector.getInstance(Game::class.java).vkGameService.getRecordsUser().forEach {
-        //    rec2.labelList.add(Label("${it.firstName} ${it.lastName} " +
-         //           "level ${Game.injector.getInstance(Game::class.java).vkGameService.getLevel(it.id)}",Label.LabelStyle().apply {
-         //       this.font =  Game.ttfFont.get(23)
-         //   }))
-        //}
-
-
-
-        val rec2 = LabelList("1 record", "2 record", "3 record", "4 record")
-
-        //table.left().bottom().add(nameUser).row()
-        table.center()
-        table.add(nameGame).row()
-        table.row().spaceTop(90f)
-        table.add(buttonStart).row()
-        table.add(buttonRecords).row()
-        rec2.labelList.forEach {
-            table.add(it).row()
-        }
-        //table.center().add(horizontalGroup)
-        tab= table
-        menuStage.addActor(table)
-        println("${tab.x} + ${tab.y}")
-
+        menuStage.addActor(createVisUI())
         bgRect = createBackground(60)
 
         if((userInfo as String) == "default") {
 
         }
      }
+
+    private fun createVisUI() : Table {
+        VisUI.getSkin()[VisTextButton.VisTextButtonStyle::class.java].font = Game.ttfFont.get(24)
+        VisUI.getSkin()[Label.LabelStyle::class.java].font = Game.ttfFont.get(24)
+        return table {
+            label("Man vs Zombies") {
+                this.color = Color.RED.cpy()
+                color.r-=0.4f
+                setFontScale(1.7f)
+            }.colspan(2).padBottom(30f).row()
+
+            //Кнопки меню
+            verticalGroup {
+                fill()
+                textButton(" START ").addListener {
+                    onButton("start")
+                    true
+                }
+                row()
+                textButton(" achievements ").addListener {
+                    onButton("achievements")
+                    true
+                }
+                row()
+                textButton(" OPTIONS ").addListener {
+                    onButton("options")
+                    true
+                }
+                row()
+                textButton(" Login in ").addListener {
+                    onButton("loginIn")
+                    true
+                }
+                row()
+
+            }.padBottom(15f)
+            row()
+            label("leaderBoard") {
+                this.setFontScale(0.7f)
+                color = Color.CYAN.cpy()
+                color.a = 0.9f
+            }
+            padBottom(20f)
+            row()
+            horizontalGroup {
+                verticalGroup {
+                    label("global") {
+                        color = Color.CYAN.cpy()
+                        color.a = 0.5f
+                    }
+                    list<VisLabel> {
+                        label("record 1")
+                        label("record 2")
+                        label("record 3")
+                        label("record 4")
+                    }
+                }.padRight(20f).padLeft(20f)
+                separator { fill() }
+                verticalGroup {
+                    label("social"){
+                        color = Color.CYAN.cpy()
+                        color.a = 0.5f
+                    }
+                    list<VisLabel> {
+                        label("record 1")
+                        label("record 2")
+                        label("record 3")
+                        label("record 4")
+                    }
+                }.padLeft(20f).padRight(20f)
+            }
+            setPosition(view.worldWidth/2,view.worldHeight/2)
+        }
+    }
 
     override fun load() {
 
@@ -185,29 +203,12 @@ class ProcessMenu : IProcess {
         return menuStage
     }
 
-
-    class ListRecords() {
-        val records = Array<String>()
-
-        init {
-            for ( i in 0..3) records.add("$i testRecord")
+    private fun onButton(nameButton: String) {
+        when(nameButton) {
+            "start" -> {Game.processManager.setCurrentProcess("game")}
+            "achievements" -> {}
+            "options" -> {}
+            "loginIn" -> {}
         }
-    }
-
-    class LabelList(vararg name: String) {
-        val labelList = Array<Label>()
-
-        init {
-            val step = 1f/ name.size
-
-            for ( i in 0..name.size - 1 ) {
-                labelList.add(Label(name[i],Label.LabelStyle().apply {
-                    this.font = Game.ttfFont.get(23)
-                    this.fontColor = Color.WHITE.cpy()
-                    this.fontColor.a = 1f-step*i
-                }))
-            }
-        }
-
     }
 }
