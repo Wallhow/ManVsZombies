@@ -3,7 +3,7 @@ package wallhow.manvszombies.game.components
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
 import wallhow.acentauri.ashley.components.ComponentResolver
-import wallhow.manvszombies.game.objects.GunType
+import wallhow.manvszombies.game.objects.models.gun.GunType
 
 /**
  * Created by wallhow on 22.01.17.

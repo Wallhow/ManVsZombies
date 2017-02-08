@@ -16,13 +16,13 @@ import wallhow.acentauri.ashley.components.extension.*
 import wallhow.manvszombies.game.Game
 import wallhow.manvszombies.game.components.CHealth
 import wallhow.manvszombies.game.components.CKickMob
-import wallhow.manvszombies.game.components.CTimer
 import wallhow.manvszombies.game.components.DeleteMe
-import wallhow.manvszombies.game.components.actions.CAction
 import wallhow.manvszombies.game.components.actions.CColorAction
 import wallhow.manvszombies.game.components.actions.CDeletAction
 import wallhow.manvszombies.game.components.actions.CSequenceAction
 import wallhow.manvszombies.game.objects.*
+import wallhow.manvszombies.game.objects.models.*
+import wallhow.manvszombies.game.objects.models.gun.GunType
 
 /**
  * Created by wallhow on 22.01.17.
@@ -71,13 +71,8 @@ class KickMobSystem @Inject constructor() : IteratingSystem(Family.all(CKickMob:
                     engine.addEntity(rip)
 
                     //Убираем моба из общего количества
-                    Game.level.mobsCount--
-
-                    //Добавляем жизнь Ячейке
-                    val cell = (it as Zombie).cell
-                    CHealth[cell].currentHealth+=50
-                    if(CHealth[cell].currentHealth>CHealth[cell].maxHealth)
-                        CHealth[cell].maxHealth=CHealth[cell].currentHealth
+                    // Обробатываем его убийство
+                    Game.getDeadMobSignaler().dispatch(it as Bot)
                 }
                 entity.add(DeleteMe())
             }

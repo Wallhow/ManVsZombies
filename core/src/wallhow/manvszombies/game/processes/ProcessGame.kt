@@ -1,5 +1,7 @@
 package wallhow.manvszombies.game.processes
 
+import com.badlogic.ashley.signals.Listener
+import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.InputProcessor
@@ -8,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Value
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
@@ -19,40 +22,41 @@ import wallhow.acentauri.ashley.components.extension.halfSize
 import wallhow.acentauri.ashley.components.extension.width
 import wallhow.acentauri.process.IProcess
 import wallhow.acentauri.process.ProcessManager
+import wallhow.acentauri.utils.gdxSchedule
 import wallhow.manvszombies.game.Game
-import wallhow.manvszombies.game.objects.GameTable
-import wallhow.manvszombies.game.Level
-import wallhow.manvszombies.game.components.CGun
-import wallhow.manvszombies.game.objects.GunType
-import wallhow.manvszombies.game.objects.Player
-import wallhow.manvszombies.game.objects.TypeZombie
-import wallhow.manvszombies.game.objects.Zombie
-import kotlin.concurrent.timer
-import kotlin.concurrent.timerTask
+import wallhow.manvszombies.game.objects.models.gun.CGun
+import wallhow.manvszombies.game.objects.*
+import wallhow.manvszombies.game.objects.models.gun.GunType
+import wallhow.manvszombies.game.objects.models.Player
+import wallhow.manvszombies.game.objects.models.TypeZombie
+import wallhow.manvszombies.game.objects.models.Zombie
 
 /**
  * Created by wallhow on 13.01.17.
  */
 class ProcessGame() : IProcess, InputAdapter() {
     override val name: String = "game"
-    private lateinit var level : Level
     private lateinit var table : GameTable
     private lateinit var gui: Stage
     private lateinit var input: InputMultiplexer
     private val player = Player()
+
     private lateinit var bulletCount : VisLabel
     private lateinit var currentWave : VisLabel
+    private lateinit var newWaveLabel : VisLabel
+
     override fun initialize(userInfo: Any) {
-        level = Game.level
         if((userInfo as String) == "menu" || (userInfo) == "default") {
             input = InputMultiplexer()
-            level.init()
+            GameState.init() // Инициализируем первую волну
+
             table = GameTable(400f,600f)
 
             gui = Stage(Game.viewport,Game.injector.getInstance(SpriteBatch::class.java))
-            println("${gui.viewport.screenX} + ${gui.viewport.screenY} + ${gui.viewport.worldWidth} + ${gui.viewport.worldHeight}")
-            //createGUI()
             gui.addActor(createVisUI())
+            gui.actionsRequestRendering=true
+
+            newWaveLabel = VisLabel("New Wave", Color.YELLOW)
             Game.engine.addEntity(player)
             input.addProcessor(gui)
             input.addProcessor(this)
@@ -64,15 +68,13 @@ class ProcessGame() : IProcess, InputAdapter() {
             setPosition(0f,0f)
             setSize(Game.viewport.worldWidth,Game.viewport.worldHeight)
 
-            currentWave = label("wave:${Game.level.levelNumber}").apply { left().expandX().row() }.actor
+            currentWave = label("wave:${GameState.level}").apply { left().expandX().row() }.actor
             val g = textButton("G") {
                 color = Color.GREEN.cpy()
                 color.a = 0.7f
                 padRight(40f)
                 addListener { e ->
-                    if (e.isHandled) {
-                        CGun[player].gunType = GunType.GREEN
-                    }
+                    player.takeGreenGun()
                     true
                 }
                 debug()
@@ -82,7 +84,7 @@ class ProcessGame() : IProcess, InputAdapter() {
                 color.a = 0.7f
                 padRight(40f)
                 addCaptureListener {
-                    CGun[player].gunType = GunType.BLUE
+                    player.takeBlueGun()
                     true
                 }
             }.right().space(10f).row()
@@ -91,31 +93,32 @@ class ProcessGame() : IProcess, InputAdapter() {
                 color.a = 0.7f
                 padRight(40f)
                 addListener {
-                    CGun[player].gunType = GunType.RED
+                    player.takeRedGun()
                     true
                 }
             }.right().row()
 
             row().left()
-            bulletCount = label("bullet: ${CGun[player].max_bullets}/${CGun[player].bullets}").actor
+            bulletCount = label("bullet: ${player.getMaxCountBullet()}/${player.getCountBullet()}").actor
             //setPosition(Game.viewport.worldWidth/2,Game.viewport.worldHeight/2)
         }.apply {  }
     }
 
     override fun load() {
-        createZombie(TypeZombie.GREEN,level.mobsCountGreen, GameTable.Cell.Type.T2X2)
-        createZombie(TypeZombie.BLUE,level.mobsCountBlue, GameTable.Cell.Type.T1X1)
-        createZombie(TypeZombie.RED,level.mobsCountRed, GameTable.Cell.Type.T4X4)
+        createZombie(TypeZombie.GREEN,GameState.botsGreen, GameTable.Cell.Type.T2X2)
+        createZombie(TypeZombie.BLUE,GameState.botsBlue, GameTable.Cell.Type.T1X1)
+        createZombie(TypeZombie.RED,GameState.botsRed, GameTable.Cell.Type.T4X4)
 
     }
-    private fun createZombieInEngine(type: TypeZombie,i : Int,cell: GameTable.Cell) {
+
+    private fun createZombieInEngine(type: TypeZombie, i : Int, cell: GameTable.Cell) {
         val z = Zombie(type,cell)
         val r = MathUtils.random(-cell.halfSize.x,cell.halfSize.x-z.width)
         CPosition[z].position.set(CPosition[cell].position.cpy().add(cell.halfSize.x + r,cell.halfSize.y+i*3f))
         CPosition[z].zIndex = -CPosition[z].position.y.toInt()
         Game.engine.addEntity(z)
     }
-    private fun createZombie(type: TypeZombie, count: Int,cellType: GameTable.Cell.Type) {
+    private fun createZombie(type: TypeZombie, count: Int, cellType: GameTable.Cell.Type) {
         val arr = table.cells.getCells(cellType)
         var c = count
         var i = 0
@@ -127,31 +130,55 @@ class ProcessGame() : IProcess, InputAdapter() {
             c--
         }
     }
+
     override fun render(sb: SpriteBatch) {
-        gui.batch.projectionMatrix=gui.camera.combined
+        gui.batch.projectionMatrix = gui.camera.combined
         gui.draw()
     }
 
+    //TODO Продумать и добавить систему улучшений за получаемы очки от убийства
+
+    //TODO Наконец уже сделать гамовер! :D
+
     override fun update(delta: Float) {
         gui.act(delta)
-        bulletCount.setText("bullet: ${CGun[player].max_bullets}/${CGun[player].bullets}")
-        currentWave.setText("wave:${Game.level.levelNumber}")
-        if(Game.level.mobsCount<=0) {
+        bulletCount.setText("bullet: ${player.getMaxCountBullet()}/${player.getCountBullet()}")
+        currentWave.setText("wave:${ GameState.level }")
+
+        if(GameState.newWave) {
             showNewWave()
         }
     }
 
     private fun showNewWave() {
         println("new Wave")
+        GameState.levelUp()
+        val timeReadyLabelShow = 2.5f
+        val readyLabel = VisLabel("Ready?", Color.YELLOW)
+        readyLabel.scaleBy(2f)
+        readyLabel.setPosition(Game.viewport.worldWidth/2-readyLabel.width/2,Game.viewport.worldHeight/2-readyLabel.height/2)
+        val a = Actions.sequence(Actions.scaleTo(3f,3f,timeReadyLabelShow),Actions.alpha(0.0f,timeReadyLabelShow))
+        readyLabel.addAction(a)
+        gui.addActor(readyLabel)
 
-        //TODO : поменять на таймер GDX
-        Game.level.levelUp()
-        load()
+        gdxSchedule(timeReadyLabelShow) {
+            gui.actors.removeValue(readyLabel,true)
+            val newWaveLabel = VisLabel("Next Wave ${GameState.level}", Color.YELLOW)
+            newWaveLabel.setPosition(Game.viewport.worldWidth/2-newWaveLabel.width/2,Game.viewport.worldHeight/2-newWaveLabel.height/2)
+            newWaveLabel.addAction(Actions.sequence(Actions.scaleTo(2f,2f,2f),Actions.alpha(0.0f,2f)))
+            gui.addActor(newWaveLabel)
+
+            gdxSchedule(2f) {
+                newWaveLabel.remove()
+                load()
+            }
+        }
     }
 
 
 
     override fun event(event: ProcessManager.EventProcess) {
+
     }
 
     override fun dispose() {
@@ -171,4 +198,6 @@ class ProcessGame() : IProcess, InputAdapter() {
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         return super.touchUp(screenX, screenY, pointer, button)
     }
+
+
 }

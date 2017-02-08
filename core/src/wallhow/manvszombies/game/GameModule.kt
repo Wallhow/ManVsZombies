@@ -2,6 +2,7 @@ package wallhow.manvszombies.game
 
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.EntitySystem
+import com.badlogic.ashley.signals.Signal
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
@@ -22,8 +23,11 @@ import com.google.inject.Singleton
 import wallhow.acentauri.process.ProcessManager
 import wallhow.acentauri.utils.TTFFont
 import wallhow.acentauri.ashley.systems.*
+import wallhow.manvszombies.game.objects.models.Bot
+import wallhow.manvszombies.game.objects.BotListener
+import wallhow.manvszombies.game.objects.models.gun.GunSystem
+import wallhow.manvszombies.game.processes.ProcessGame
 import wallhow.manvszombies.game.systems.*
-import wallhow.vkdesktop.VKGameServiceDesktop
 
 class GameModule(game: Game) : Module {
     private var game: Game
@@ -64,11 +68,6 @@ class GameModule(game: Game) : Module {
     }
 
     @Provides @Singleton
-    fun level() : Level {
-        return Level()
-    }
-
-    @Provides @Singleton
     fun systems ( ) : Systems {
         return Systems(listOf(
                 PlayerControllerSystem::class.java,
@@ -76,7 +75,7 @@ class GameModule(game: Game) : Module {
                 MovementSystem::class.java,DrawDebugSystem::class.java,
                 DrawImageSystem::class.java,
                 DrawHealthSystem::class.java,
-                TimerSystem::class.java,
+                TaskSystem::class.java,
                 KickSystem::class.java,
                 DeleteMeSystem::class.java,
                 GunSystem::class.java,
@@ -87,19 +86,8 @@ class GameModule(game: Game) : Module {
         ))
     }
     @Provides @Singleton
-    fun imageButtonStyle() : TextButton.TextButtonStyle {
-        val pixel = Pixmap(36,36, Pixmap.Format.RGBA8888)
-        val c = Color.FOREST
-        c.a = 0.6f
-        pixel.setColor(c)
-        pixel.fill()
-        val up =TextureRegion(Texture(pixel))
-        val down = TextureRegion(Texture(pixel))
-        val checked = TextureRegion(Texture(pixel))
-        val style = TextButton.TextButtonStyle(TextureRegionDrawable(up),
-                TextureRegionDrawable(checked), TextureRegionDrawable(down),ttfFont().get(12))
-
-        return style
+    fun botListener() : BotListener {
+        return BotListener()
     }
 
 }

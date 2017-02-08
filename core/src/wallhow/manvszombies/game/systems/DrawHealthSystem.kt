@@ -21,6 +21,7 @@ class DrawHealthSystem @Inject constructor(val batch: SpriteBatch) : IteratingSy
     private val p : Texture
     private val border = 4
     private val halfBorder = border /2
+    private val color = Color.GOLD.cpy()
     init {
         p = Texture(Pixmap(1,1,Pixmap.Format.RGBA8888).apply {
             val c =Color.WHITE.cpy()
@@ -28,23 +29,39 @@ class DrawHealthSystem @Inject constructor(val batch: SpriteBatch) : IteratingSy
             setColor(c)
             fill()
         })
+        color.a=0.2f
     }
 
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if (CHealth[entity].draw) {
             val heightLine = CImage[entity].height
-            val widthLine = 6f
-            val step = (heightLine - halfBorder) / CHealth[entity].maxHealth
+            val widthLine = CImage[entity].width
+
+            val step = widthLine / CHealth[entity].maxHealth
             val pos = CPosition[entity].position
 
-            batch.color = Color.BLUE
-            batch.draw(p, pos.x, pos.y, widthLine + border, heightLine)
-            batch.color = Color.GOLD
-            batch.draw(p, pos.x + halfBorder, pos.y + halfBorder, widthLine - halfBorder, step * CHealth[entity].currentHealth)
+
+            batch.color = color
+            batch.draw(p, pos.x, pos.y, step * CHealth[entity].currentHealth,heightLine)
             batch.color = Color.WHITE
-            Game.ttfFont.get(10).draw(batch,"${CHealth[entity].currentHealth.toInt()}/${CHealth[entity].maxHealth.toInt()}",pos.x,pos.y)
+            Game.ttfFont.get(10).draw(batch,"${CHealth[entity].currentHealth.toInt()}/${CHealth[entity].maxHealth.toInt()}",pos.x,pos.y + 10f)
         }
     }
+
+    private fun drawTypeLeft(batch: SpriteBatch,entity: Entity) {
+        val heightLine = CImage[entity].height
+        val widthLine = 6f
+        val step = (heightLine - halfBorder) / CHealth[entity].maxHealth
+        val pos = CPosition[entity].position
+
+        batch.color = Color.BLUE
+        batch.draw(p, pos.x, pos.y, widthLine + border, heightLine)
+        batch.color = Color.GOLD
+        batch.draw(p, pos.x + halfBorder, pos.y + halfBorder, widthLine - halfBorder, step * CHealth[entity].currentHealth)
+        batch.color = Color.WHITE
+        Game.ttfFont.get(10).draw(batch,"${CHealth[entity].currentHealth.toInt()}/${CHealth[entity].maxHealth.toInt()}",pos.x,pos.y)
+    }
+
 
     override fun update(deltaTime: Float) {
         batch.begin()

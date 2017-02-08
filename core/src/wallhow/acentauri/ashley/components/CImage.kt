@@ -73,6 +73,9 @@ class CImage(var texture: TextureRegion,
             time = 0f
         }
     }
+    fun setFrame(frame: Int) {
+        currentFrame = frame
+    }
 
     fun play() { animation = true }
     fun pause() { animation = false }

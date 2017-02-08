@@ -2,6 +2,7 @@ package wallhow.manvszombies.game.objects
 
 import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
@@ -64,7 +65,8 @@ class GameTable ( worldWidth: Float, worldHeight: Float) {
         val paddingY = 1
         val paddingX = 1
         val cells : Array<Cell>
-        val cellTexture = Texture("assets/cell.png")
+
+        val cellTexture = TextureRegion(Texture(Gdx.files.internal("assets/cells16x16.png")))
         private val cellsFlags : kotlin.Array<kotlin.Array<Boolean>>
 
         init {
@@ -92,7 +94,8 @@ class GameTable ( worldWidth: Float, worldHeight: Float) {
             val cell = Cell(type)
             val size = type.size
             cell.add(CPosition(Vector2(cellSizePx*x,cellSizePx*y)).apply { zIndex = Integer.MIN_VALUE})
-            cell.add(CImage(TextureRegion(cellTexture),cellSizePx*size.x,cellSizePx*size.y))
+            cell.add(CImage(cellTexture,cellSizePx*size.x,cellSizePx*size.y,16f,16f).apply {
+                frameSequence= intArrayOf(MathUtils.random(0,3)) })
 
             add(cell,x.toInt(),y.toInt())
         }
@@ -139,7 +142,7 @@ class GameTable ( worldWidth: Float, worldHeight: Float) {
 
 
     class Cell(defType: Type) : Entity() {
-        private val objects: Array<Entity>
+        val objects: Array<Entity>
         val cellComponent: CellComponent
 
         init {

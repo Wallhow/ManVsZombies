@@ -1,4 +1,4 @@
-package wallhow.manvszombies.game.objects
+package wallhow.manvszombies.game.objects.models
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.g2d.TextureRegion
@@ -18,12 +18,12 @@ open class Bot : Entity() {
     protected fun createPosition(position: Vector2) {
         add(CPosition(position,-position.y.toInt()))
     }
-    protected fun createImage(textureRegion: TextureRegion,frameWidth: Float, frameHeight: Float, sequence : IntArray) {
+    protected fun createImage(textureRegion: TextureRegion, frameWidth: Float, frameHeight: Float, sequence : IntArray) {
         val cImage = CImage(textureRegion,frameWidth,frameHeight,frameWidth,frameHeight)
         cImage.frameSequence = sequence
         add(cImage)
     }
-    protected fun createMovement(direction: Vector2,speed: Float) {
+    protected fun createMovement(direction: Vector2, speed: Float) {
         add(CMovement(direction.scl(speed,speed)))
     }
 }
