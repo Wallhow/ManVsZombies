@@ -2,12 +2,16 @@ package wallhow.manvszombies.game.processes
 
 import com.badlogic.ashley.signals.Listener
 import com.badlogic.ashley.signals.Signal
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
@@ -17,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Timer
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
+import wallhow.acentauri.ashley.components.CImage
 import wallhow.acentauri.ashley.components.CPosition
 import wallhow.acentauri.ashley.components.extension.halfSize
 import wallhow.acentauri.ashley.components.extension.width
@@ -36,30 +41,62 @@ import wallhow.manvszombies.game.objects.models.Zombie
  */
 class ProcessGame() : IProcess, InputAdapter() {
     override val name: String = "game"
-    private lateinit var table : GameTable
+    private lateinit var gameField : GameField
     private lateinit var gui: Stage
     private lateinit var input: InputMultiplexer
     private val player = Player()
+    private var gameOver = false
 
     private lateinit var bulletCount : VisLabel
     private lateinit var currentWave : VisLabel
     private lateinit var newWaveLabel : VisLabel
 
+
+
     override fun initialize(userInfo: Any) {
         if((userInfo as String) == "menu" || (userInfo) == "default") {
             input = InputMultiplexer()
-            GameState.init() // Инициализируем первую волну
-
-            table = GameTable(400f,600f)
 
             gui = Stage(Game.viewport,Game.injector.getInstance(SpriteBatch::class.java))
             gui.addActor(createVisUI())
             gui.actionsRequestRendering=true
 
-            newWaveLabel = VisLabel("New Wave", Color.YELLOW)
-            Game.engine.addEntity(player)
             input.addProcessor(gui)
             input.addProcessor(this)
+
+            initGame()
+        }
+    }
+
+    private fun createCellsInGameField() {
+        val cellTexture = TextureRegion(Texture(Gdx.files.internal("assets/cells16x16.png")))
+        gameField.addCell(Cell.Type.T4X4,2) {
+            val cell_type = Cell.Type.T4X4
+            val cell = Cell(cell_type)
+            val size = cell_type.size
+            cell.add(CImage(cellTexture,40f*size.x,40f*size.y,16f,16f).apply {
+                frameSequence= intArrayOf(MathUtils.random(0,3)) })
+            Game.engine.addEntity(cell)
+            cell // return
+        }
+
+        gameField.addCell(Cell.Type.T2X2,5) {
+            val cell_type = Cell.Type.T2X2
+            val cell = Cell(cell_type)
+            val size = cell_type.size
+            cell.add(CImage(cellTexture,40f*size.x,40f*size.y,16f,16f).apply {
+                frameSequence= intArrayOf(MathUtils.random(0,3)) })
+            Game.engine.addEntity(cell)
+            cell // return
+        }
+        gameField.addCell(Cell.Type.T1X1,4) {
+            val cell_type = Cell.Type.T1X1
+            val cell = Cell(cell_type)
+            val size = cell_type.size
+            cell.add(CImage(cellTexture,40f*size.x,40f*size.y,16f,16f).apply {
+                frameSequence= intArrayOf(MathUtils.random(0,3)) })
+            Game.engine.addEntity(cell)
+            cell // return
         }
     }
 
@@ -77,7 +114,6 @@ class ProcessGame() : IProcess, InputAdapter() {
                     player.takeGreenGun()
                     true
                 }
-                debug()
             }.expandY().expandX().bottom().right().row()
             val b = textButton("B") {
                 color = Color.BLUE.cpy()
@@ -100,26 +136,52 @@ class ProcessGame() : IProcess, InputAdapter() {
 
             row().left()
             bulletCount = label("bullet: ${player.getMaxCountBullet()}/${player.getCountBullet()}").actor
-            //setPosition(Game.viewport.worldWidth/2,Game.viewport.worldHeight/2)
         }.apply {  }
     }
 
+    fun initGame() {
+        GameState.init() // Инициализируем первую волну
+
+        gameField = Game.gameField
+        createCellsInGameField()
+        newWaveLabel = VisLabel("New Wave", Color.YELLOW)
+        Game.engine.addEntity(player)
+    }
+
     override fun load() {
-        createZombie(TypeZombie.GREEN,GameState.botsGreen, GameTable.Cell.Type.T2X2)
-        createZombie(TypeZombie.BLUE,GameState.botsBlue, GameTable.Cell.Type.T1X1)
-        createZombie(TypeZombie.RED,GameState.botsRed, GameTable.Cell.Type.T4X4)
+        if(gameField.getCells(Cell.Type.T4X4).size>0)
+            createZombie(TypeZombie.RED,GameState.botsRed, Cell.Type.T4X4)
+        else if(gameField.getCells(Cell.Type.T2X2).size>0)
+            createZombie(TypeZombie.RED,GameState.botsRed, Cell.Type.T2X2)
+        else
+            createZombie(TypeZombie.RED,GameState.botsRed, Cell.Type.T1X1)
+
+        if(gameField.getCells(Cell.Type.T2X2).size > 0)
+            createZombie(TypeZombie.GREEN,GameState.botsGreen, Cell.Type.T2X2)
+        else if(gameField.getCells(Cell.Type.T4X4).size >0 )
+            createZombie(TypeZombie.GREEN,GameState.botsGreen, Cell.Type.T4X4)
+        else
+            createZombie(TypeZombie.GREEN,GameState.botsGreen, Cell.Type.T1X1)
+
+        if(gameField.getCells(Cell.Type.T1X1).size > 0)
+            createZombie(TypeZombie.BLUE,GameState.botsBlue, Cell.Type.T1X1)
+        else if(gameField.getCells(Cell.Type.T4X4).size > 0)
+            createZombie(TypeZombie.BLUE,GameState.botsBlue, Cell.Type.T4X4)
+        else if(gameField.getCells(Cell.Type.T2X2).size > 0)
+            createZombie(TypeZombie.BLUE,GameState.botsBlue, Cell.Type.T4X4)
+
 
     }
 
-    private fun createZombieInEngine(type: TypeZombie, i : Int, cell: GameTable.Cell) {
+    private fun createZombieInEngine(type: TypeZombie, i : Int, cell: Cell) {
         val z = Zombie(type,cell)
         val r = MathUtils.random(-cell.halfSize.x,cell.halfSize.x-z.width)
         CPosition[z].position.set(CPosition[cell].position.cpy().add(cell.halfSize.x + r,cell.halfSize.y+i*3f))
         CPosition[z].zIndex = -CPosition[z].position.y.toInt()
         Game.engine.addEntity(z)
     }
-    private fun createZombie(type: TypeZombie, count: Int, cellType: GameTable.Cell.Type) {
-        val arr = table.cells.getCells(cellType)
+    private fun createZombie(type: TypeZombie, count: Int, cellType: Cell.Type) {
+        val arr = gameField.getCells(cellType)
         var c = count
         var i = 0
         while (c!=0) {
@@ -138,15 +200,24 @@ class ProcessGame() : IProcess, InputAdapter() {
 
     //TODO Продумать и добавить систему улучшений за получаемы очки от убийства
 
-    //TODO Наконец уже сделать гамовер! :D
+    //TODO Добавить локальные рекорды
 
     override fun update(delta: Float) {
         gui.act(delta)
         bulletCount.setText("bullet: ${player.getMaxCountBullet()}/${player.getCountBullet()}")
         currentWave.setText("wave:${ GameState.level }")
 
-        if(GameState.newWave) {
-            showNewWave()
+
+        if(!gameOver && gameField.getCells(Cell.Type.T2X2).size == 0
+        && gameField.getCells(Cell.Type.T1X1).size == 0
+        && gameField.getCells(Cell.Type.T4X4).size == 0) {
+            gameOver()
+        }
+
+        if(!gameOver) {
+            if (GameState.newWave) {
+                showNewWave()
+            }
         }
     }
 
@@ -175,7 +246,37 @@ class ProcessGame() : IProcess, InputAdapter() {
         }
     }
 
+    private fun gameOver() {
+        gameOver = true
 
+        val tableGameOver = ktx.vis.table {
+            setPosition(0f,0f)
+            setSize(Game.viewport.worldWidth,Game.viewport.worldHeight)
+
+            label("Game Over").center().row()
+
+            verticalGroup {
+                space(10f)
+                textButton("replay").addListener { e ->
+                    gameOver=false
+                    GameState.reset()
+                    initGame()
+                    true
+                }
+                row()
+                textButton("main menu").addListener { e ->
+                    Game.engine.removeAllEntities()
+                    GameState.reset()
+                    gameOver=false
+                    Game.processManager.setCurrentProcess("menu")
+                    true
+                }
+            }
+        }
+
+        gui.clear()
+        gui.addActor(tableGameOver)
+    }
 
     override fun event(event: ProcessManager.EventProcess) {
 

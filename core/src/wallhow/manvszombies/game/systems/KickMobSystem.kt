@@ -54,7 +54,6 @@ class KickMobSystem @Inject constructor() : IteratingSystem(Family.all(CKickMob:
             if(bullet.overlaps(mob)) {
                 CHealth[it].currentHealth-=CKickMob[entity].gunType.force
                 if(CHealth[it].currentHealth<=0) {
-                    it.add(DeleteMe())
                     val rip = Entity()
                     rip.add(CPosition[it])
                     rip.add(CImage(Game.atlas.findRegion("rip"),31f,13f,31f,13f).apply {

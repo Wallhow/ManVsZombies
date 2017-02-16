@@ -8,15 +8,15 @@ import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.viewport.Viewport
 import wallhow.acentauri.ashley.components.CImage
 import wallhow.manvszombies.game.Game
-import wallhow.manvszombies.game.objects.GameTable
 import wallhow.manvszombies.game.components.CHealth
 import wallhow.manvszombies.game.components.CKick
 import wallhow.manvszombies.game.objects.Balance
+import wallhow.manvszombies.game.objects.Cell
 
 /**
  * Created by wallhow on 13.01.17.
  */
-class Zombie (val type: TypeZombie, val cell: GameTable.Cell) : Bot() {
+class Zombie (val type: TypeZombie, val cell: Cell) : Bot() {
     init {
         val view = Game.injector.getInstance(Viewport::class.java)
         val r = MathUtils.random(0,1)

@@ -25,6 +25,7 @@ import wallhow.acentauri.utils.TTFFont
 import wallhow.acentauri.ashley.systems.*
 import wallhow.manvszombies.game.objects.models.Bot
 import wallhow.manvszombies.game.objects.BotListener
+import wallhow.manvszombies.game.objects.CellListener
 import wallhow.manvszombies.game.objects.models.gun.GunSystem
 import wallhow.manvszombies.game.processes.ProcessGame
 import wallhow.manvszombies.game.systems.*
@@ -70,8 +71,6 @@ class GameModule(game: Game) : Module {
     @Provides @Singleton
     fun systems ( ) : Systems {
         return Systems(listOf(
-                PlayerControllerSystem::class.java,
-                //CollideDetectedSystem::class.java,
                 MovementSystem::class.java,DrawDebugSystem::class.java,
                 DrawImageSystem::class.java,
                 DrawHealthSystem::class.java,
@@ -89,6 +88,8 @@ class GameModule(game: Game) : Module {
     fun botListener() : BotListener {
         return BotListener()
     }
+    @Provides @Singleton
+    fun cellListener() = CellListener()
 
 }
 data class Systems(val list: List<Class<out EntitySystem>>)

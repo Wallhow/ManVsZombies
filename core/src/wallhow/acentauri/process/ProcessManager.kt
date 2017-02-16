@@ -92,10 +92,20 @@ class ProcessManager : InputAdapter() {
         return false
     }
 
+    override fun keyDown(keycode: Int): Boolean {
+        currentProcess.getInputProcessListener()?.keyDown(keycode)
+        return false
+    }
+
+    override fun keyUp(keycode: Int): Boolean {
+        currentProcess.getInputProcessListener()?.keyUp(keycode)
+        return false
+    }
+
     enum class EventProcess(var data: Any?) {
         Pause(null),Resize(Vector2()),Hide(null),Resume(null)
     }
-    class ProcessAdapter(override val name: String) : IProcess {
+    open class ProcessAdapter(override val name: String) : IProcess {
         override fun initialize(userInfo: Any) {
 
         }

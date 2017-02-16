@@ -10,7 +10,7 @@ object GameState {
     /**
      * Характеристики уровня
      */
-    var level : Int = 1
+    var level : Int = 20
         private set
     var botsGreen: Int = 0
         private set
@@ -35,6 +35,15 @@ object GameState {
     val newWave: Boolean
         get() = botsCount<=0
 
+
+    fun reset() {
+        points = 0
+        greenKilled = 0
+        redKilled = 0
+        blueKilled = 0
+        level = 1
+        botsCount = 0
+    }
 }
 
 /**
@@ -55,9 +64,9 @@ object Balance {
     val MobForceTimeV1 = 1f
 
     enum class Effect(var force: Int, var timeForce: Float) {
-        MobV1(10,2.5f),
-        MobV2(20,3f),
-        MobV3(50,5f),
+        MobV1(5,2.5f),
+        MobV2(20,4f),
+        MobV3(70,7f),
 
         GunV1(MobHpV1 /2,0f),
         GunV2(MobHpV2 /3,0f),

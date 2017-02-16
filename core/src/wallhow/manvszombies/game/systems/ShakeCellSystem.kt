@@ -11,14 +11,14 @@ import wallhow.acentauri.ashley.components.CPosition
 import wallhow.acentauri.ashley.components.ComponentResolver
 import wallhow.acentauri.ashley.components.extension.position
 import wallhow.manvszombies.game.components.task
-import wallhow.manvszombies.game.objects.GameTable
+import wallhow.manvszombies.game.objects.Cell
 
 /**
  * Created by wallhow on 28.01.2017.
  */
 class ShakeCellSystem @Inject constructor() : IteratingSystem(Family.all(CShake::class.java).get()){
     override fun processEntity(entity: Entity, deltaTime: Float) {
-        val bots = (entity as GameTable.Cell).objects
+        val bots = (entity as Cell).objects
         if(CShake[entity].dirty) {
             CShake[entity].prePosition = entity.position.cpy()
             CShake[entity].dirty = false

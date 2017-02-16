@@ -19,6 +19,9 @@ import wallhow.acentauri.utils.ozmod.APlayer
 import wallhow.acentauri.utils.TTFFont
 import wallhow.manvszombies.game.objects.models.Bot
 import wallhow.manvszombies.game.objects.BotListener
+import wallhow.manvszombies.game.objects.Cell
+import wallhow.manvszombies.game.objects.CellListener
+import wallhow.manvszombies.game.objects.GameField
 import wallhow.manvszombies.game.processes.ProcessGame
 import wallhow.manvszombies.game.processes.ProcessMenu
 
@@ -35,6 +38,12 @@ class Game : ApplicationAdapter() {
 
 
     private val audioPlayer = APlayer()
+
+    init {
+        //Test
+
+
+    }
 
     private fun createBackground(count : Int): Array<Rectangle> {
         val rects = Array<Rectangle>()
@@ -63,6 +72,7 @@ class Game : ApplicationAdapter() {
 
         injector = Guice.createInjector(GameModule(this))
         deadMob.add(getBotListener())
+        deadCell.add(getCellListener())
 
 
         spriteBatch = SpriteBatch()
@@ -75,17 +85,9 @@ class Game : ApplicationAdapter() {
         game = ProcessGame()
         Gdx.input.inputProcessor = pManager
 
-        pManager.addProcess(menu,true)
-        pManager.addProcess(game)
+        pManager.addProcess(menu)
+        pManager.addProcess(game,true)
         bgRect = createBackground(60)
-    }
-
-    override fun pause() {
-        pManager.pause()
-    }
-    override fun resize(width: Int, height: Int) {
-        injector.getInstance(Viewport::class.java).update(width,height,true)
-        pManager.resize(width,height)
     }
     override fun render() {
         cs(0f)
@@ -96,6 +98,13 @@ class Game : ApplicationAdapter() {
         pManager.render(spriteBatch as SpriteBatch)
     }
 
+    override fun pause() {
+        pManager.pause()
+    }
+    override fun resize(width: Int, height: Int) {
+        injector.getInstance(Viewport::class.java).update(width,height,true)
+        pManager.resize(width,height)
+    }
     private fun bgDraw(sb: SpriteBatch) {
         sb.begin()
         sb.color = Color.DARK_GRAY
@@ -127,7 +136,9 @@ class Game : ApplicationAdapter() {
 
     companion object {
         lateinit var injector: Injector
+        val gameField = GameField(400f,600f,40f)
         private val deadMob = Signal<Bot>()
+        private val deadCell = Signal<Cell>()
 
         fun cs(color : Float) {
             Gdx.gl.glClearColor(color, color, color, 1f)
@@ -150,7 +161,11 @@ class Game : ApplicationAdapter() {
         fun getDeadMobSignaler() : Signal<Bot> {
             return deadMob
         }
+        fun getDeadCellSignaler() : Signal<Cell> {
+            return deadCell
+        }
         fun getBotListener() = injector.getInstance(BotListener::class.java)
+        fun getCellListener() = injector.getInstance(CellListener::class.java)
 
         lateinit var texturePixel : Texture
 
