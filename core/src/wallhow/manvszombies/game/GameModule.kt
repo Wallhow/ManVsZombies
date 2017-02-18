@@ -26,6 +26,7 @@ import wallhow.acentauri.ashley.systems.*
 import wallhow.manvszombies.game.objects.models.Bot
 import wallhow.manvszombies.game.objects.BotListener
 import wallhow.manvszombies.game.objects.CellListener
+import wallhow.manvszombies.game.objects.GameRecords
 import wallhow.manvszombies.game.objects.models.gun.GunSystem
 import wallhow.manvszombies.game.processes.ProcessGame
 import wallhow.manvszombies.game.systems.*
@@ -38,6 +39,7 @@ class GameModule(game: Game) : Module {
     override fun configure(binder: Binder) {
         binder.bind(SpriteBatch::class.java).to(game.spriteBatch)
         binder.bind(OrthographicCamera::class.java).to(viewport().camera)
+        binder.bind(GameRecords::class.java).to(game.gameRecords)
     }
 
     @Provides @Singleton

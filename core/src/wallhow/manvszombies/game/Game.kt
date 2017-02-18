@@ -17,11 +17,8 @@ import com.kotcrab.vis.ui.VisUI
 import wallhow.acentauri.process.ProcessManager
 import wallhow.acentauri.utils.ozmod.APlayer
 import wallhow.acentauri.utils.TTFFont
+import wallhow.manvszombies.game.objects.*
 import wallhow.manvszombies.game.objects.models.Bot
-import wallhow.manvszombies.game.objects.BotListener
-import wallhow.manvszombies.game.objects.Cell
-import wallhow.manvszombies.game.objects.CellListener
-import wallhow.manvszombies.game.objects.GameField
 import wallhow.manvszombies.game.processes.ProcessGame
 import wallhow.manvszombies.game.processes.ProcessMenu
 
@@ -33,6 +30,7 @@ class Game : ApplicationAdapter() {
     private lateinit var pManager: ProcessManager
     private lateinit var menu : ProcessMenu
     private lateinit var game : ProcessGame
+    lateinit var gameRecords: GameRecords
 
     private var bgRect = Array<Rectangle>()
 
@@ -62,7 +60,7 @@ class Game : ApplicationAdapter() {
         pixel.setColor(Color.RED)
         pixel.fill()
         texturePixel = Texture(pixel)
-
+        gameRecords = GameRecords()
 
         VisUI.load(VisUI.SkinScale.X2) // ГУЙ
 
@@ -85,8 +83,8 @@ class Game : ApplicationAdapter() {
         game = ProcessGame()
         Gdx.input.inputProcessor = pManager
 
-        pManager.addProcess(menu)
-        pManager.addProcess(game,true)
+        pManager.addProcess(menu,true)
+        pManager.addProcess(game)
         bgRect = createBackground(60)
     }
     override fun render() {

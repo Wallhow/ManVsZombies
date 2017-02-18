@@ -35,6 +35,7 @@ import wallhow.acentauri.process.ProcessManager
 import wallhow.acentauri.process.IProcess
 import wallhow.acentauri.utils.TTFFont
 import wallhow.manvszombies.game.Game
+import wallhow.manvszombies.game.objects.GameRecords
 
 /**
  * Created by wallhow on 09.01.17.
@@ -102,15 +103,15 @@ class ProcessMenu : IProcess {
             row()
             horizontalGroup {
                 verticalGroup {
-                    label("global") {
+                    label("local") {
                         color = Color.CYAN.cpy()
                         color.a = 0.5f
                     }
                     list<VisLabel> {
-                        label("record 1")
-                        label("record 2")
-                        label("record 3")
-                        label("record 4")
+                        val records = Game.injector.getInstance(GameRecords::class.java)
+                        records.get().forEach {
+                            label("${it.namePlayer} wave ${it.wave}")
+                        }
                     }
                 }.padRight(20f).padLeft(20f)
                 separator { fill() }
