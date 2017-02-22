@@ -36,35 +36,10 @@ class DrawDebugSystem @Inject constructor(val camera: OrthographicCamera, val ba
                // 5f,Color.YELLOW)
     }
 
-    fun SpriteBatch.drawBox(x:Float,y:Float,width: Float,height: Float,size: Float,color: Color) {
-        val halfSize= size/2
-        this.color = color
-        this.draw(p,x-halfSize,y-halfSize,width+size,size)
-        this.draw(p,x-halfSize,y+height-halfSize,width+size,size)
-        this.draw(p,x-halfSize+width,y-halfSize,size,height+size)
-        this.draw(p,x-halfSize,y-halfSize,size,height+size)
-        this.color = Color.WHITE
-    }
-
     override fun update(deltaTime: Float) {
         batch.begin()
-        drawGrid(batch)
         super.update(deltaTime)
         font.draw(batch,"FPS[ ${Gdx.graphics.framesPerSecond} ]\n",camera.position.x-camera.viewportWidth/2 + 50,camera.position.y+ camera.viewportHeight/2 - 40f)
         batch.end()
-    }
-
-    fun drawGrid(batch: SpriteBatch) {
-        val cellSize = 40
-        val w = 400 / cellSize
-        val h = 600 / cellSize
-        batch.color = colorGrid
-        for(x in 0..w) {
-            batch.draw(p,x*cellSize.toFloat(),0f,5f,600f)
-        }
-        for ( y in 0..h) {
-            batch.draw(p,0f,y*cellSize.toFloat(),400f,5f)
-        }
-        batch.color = Color.CLEAR
     }
 }

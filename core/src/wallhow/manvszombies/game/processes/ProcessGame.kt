@@ -2,10 +2,7 @@ package wallhow.manvszombies.game.processes
 
 import com.badlogic.ashley.signals.Listener
 import com.badlogic.ashley.signals.Signal
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.InputAdapter
-import com.badlogic.gdx.InputMultiplexer
-import com.badlogic.gdx.InputProcessor
+import com.badlogic.gdx.*
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -13,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
+import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Label
@@ -21,6 +19,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Timer
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
+import ktx.scene2d.dialog
+import ktx.vis.KVisWindow
+import ktx.vis.window
 import wallhow.acentauri.ashley.components.CImage
 import wallhow.acentauri.ashley.components.CPosition
 import wallhow.acentauri.ashley.components.extension.halfSize
@@ -44,16 +45,16 @@ class ProcessGame() : IProcess, InputAdapter() {
     private lateinit var gameField : GameField
     private lateinit var gui: Stage
     private lateinit var input: InputMultiplexer
-    private val player = Player()
+    private lateinit var player : Player
     private var gameOver = false
 
     private lateinit var bulletCount : VisLabel
     private lateinit var currentWave : VisLabel
     private lateinit var newWaveLabel : VisLabel
 
-
-
     override fun initialize(userInfo: Any) {
+        println("process game ")
+        player = Player(Vector2(Game.viewport.worldWidth/2f,0f))
         if((userInfo as String) == "menu" || (userInfo) == "default") {
             input = InputMultiplexer()
 
@@ -65,6 +66,8 @@ class ProcessGame() : IProcess, InputAdapter() {
             input.addProcessor(this)
 
             initGame()
+
+            println(CPosition[player].position.toString())
         }
     }
 
@@ -248,38 +251,91 @@ class ProcessGame() : IProcess, InputAdapter() {
 
     private fun gameOver() {
         gameOver = true
+        Game.engine.removeAllEntities()
 
         val tableGameOver = ktx.vis.table {
-            setPosition(0f,0f)
-            setSize(Game.viewport.worldWidth,Game.viewport.worldHeight)
+            setPosition(0f, 0f)
+            setSize(Game.viewport.worldWidth, Game.viewport.worldHeight)
 
-            label("Game Over").center().row()
+            label("Game Over") {
+                this.setFontScale(2.5f)
+                this.setColor(0.5f, 0f, 0f, 1f)
+            }.center().row()
 
             verticalGroup {
                 space(10f)
                 textButton("replay").addListener { e ->
-                    gameOver=false
+                    gameOver = false
+                    flushRecord()
                     GameState.reset()
                     initGame()
-                    true
+                    false
                 }
                 row()
-                textButton("main menu").addListener { e ->
-                    Game.engine.removeAllEntities()
-                    GameState.reset()
-                    gameOver=false
-                    Game.processManager.setCurrentProcess("menu")
-                    true
+                textButton("main menu").addCaptureListener(object : ClickListener() {
+                    override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                        flushRecord()
+                        GameState.reset()
+                        gameOver = false
+                        Game.processManager.setCurrentProcess("menu")
+                    }
+                })
+                row()
+                row()
+
+                val name = label("you " + GameState.nickName)
+                name.addCaptureListener(object : ClickListener() {
+                    override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                        Gdx.input.getTextInput(object : Input.TextInputListener {
+                            override fun input(text: String) {
+                                GameState.nickName = text
+                                name.setText("you $text")
+                            }
+
+                            override fun canceled() {
+                            }
+                        }, "your name", GameState.nickName, "____")
+                    }
+                })
+                row()
+                label("your wave ${GameState.level}") {
+                    this.setFontScale(0.9f)
+                }
+                row()
+                val records = Game.injector.getInstance(GameRecords::class.java)
+                if (records.get()[0].wave < GameState.level) {
+                    label("New RECORD!") {
+                        this.color = Color.RED.cpy()
+                        this.setFontScale(2f)
+                    }
+                    row()
                 }
             }
         }
 
-        gui.clear()
-        gui.addActor(tableGameOver)
+            gui.clear()
+            gui.addActor(tableGameOver)
+
+    }
+
+    private fun flushRecord() {
+        val records = Game.injector.getInstance(GameRecords::class.java)
+        for (i in 0..records.get().size-1) {
+            if(records.get()[i].wave<=GameState.level) {
+                if(records.get()[i].wave==GameState.level) {
+                    break
+                }
+                records.get()[i].namePlayer = GameState.nickName
+                records.get()[i].wave = GameState.level
+                records.flush()
+                break
+            }
+        }
     }
 
     override fun event(event: ProcessManager.EventProcess) {
-
+        if(event == ProcessManager.EventProcess.Resize) {
+        }
     }
 
     override fun dispose() {

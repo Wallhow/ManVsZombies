@@ -2,21 +2,22 @@ package wallhow.manvszombies.game
 
 import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.signals.Signal
-import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.viewport.Viewport
 import com.google.inject.*
 import com.kotcrab.vis.ui.VisUI
+import wallhow.acentauri.CoreGame
+import wallhow.acentauri.extension.graphics.drawGridLine
 import wallhow.acentauri.process.ProcessManager
 import wallhow.acentauri.utils.ozmod.APlayer
 import wallhow.acentauri.utils.TTFFont
+import wallhow.acentauri.utils.social.GameService
 import wallhow.manvszombies.game.objects.*
 import wallhow.manvszombies.game.objects.models.Bot
 import wallhow.manvszombies.game.processes.ProcessGame
@@ -25,12 +26,13 @@ import wallhow.manvszombies.game.processes.ProcessMenu
 /**
  * Created by wallhow on 09.01.17.
  */
-class Game : ApplicationAdapter() {
+class Game(gameService: GameService) : CoreGame() {
     var spriteBatch: SpriteBatch? = null
     private lateinit var pManager: ProcessManager
     private lateinit var menu : ProcessMenu
     private lateinit var game : ProcessGame
     lateinit var gameRecords: GameRecords
+
 
     private var bgRect = Array<Rectangle>()
 
@@ -39,7 +41,7 @@ class Game : ApplicationAdapter() {
 
     init {
         //Test
-
+        gs = gameService
 
     }
 
@@ -56,10 +58,29 @@ class Game : ApplicationAdapter() {
     }
 
     override fun create() {
-        val pixel = Pixmap(24, 24, Pixmap.Format.RGBA8888)
-        pixel.setColor(Color.RED)
-        pixel.fill()
-        texturePixel = Texture(pixel)
+        super.create()
+
+        val authSocial = false//gs.authorize("7ddf459aea673ce1e4")//Gdx.app.getPreferences("service").getString("code"))
+
+        val socialRecords = Array<GameRecords.Record>()
+        if(authSocial) {
+            gs.getFriends().forEach {
+                val record = GameRecords.Record().apply {
+                    namePlayer = "${it.firstName} ${it.lastName}"
+                    //wave = it.level
+                }
+                socialRecords.add(record)
+            }
+        } else {
+            for (i in 0..3) {
+                val record = GameRecords.Record()
+                record.namePlayer = "no connect"
+                record.wave = 0
+
+                socialRecords.add(record)
+            }
+        }
+
         gameRecords = GameRecords()
 
         VisUI.load(VisUI.SkinScale.X2) // ГУЙ
@@ -79,7 +100,7 @@ class Game : ApplicationAdapter() {
             engine.addSystem(system)
         }
         pManager = processManager
-        menu = ProcessMenu()
+        menu = ProcessMenu().apply { socialGameRecords = socialRecords }
         game = ProcessGame()
         Gdx.input.inputProcessor = pManager
 
@@ -87,11 +108,17 @@ class Game : ApplicationAdapter() {
         pManager.addProcess(game)
         bgRect = createBackground(60)
     }
+
     override fun render() {
-        cs(0f)
-        spriteBatch?.projectionMatrix = injector.getInstance(Viewport::class.java).camera.combined
-        bgDraw(spriteBatch as SpriteBatch)
-        bgProcess(Gdx.graphics.deltaTime)
+        clearScreen(0f)
+        spriteBatch?.projectionMatrix = viewport.camera.combined
+        spriteBatch?.run {
+            begin()
+            drawBackground(this)
+            drawGridLine(pixel, viewport.worldWidth, viewport.worldHeight,40f,5f,Color.DARK_GRAY)
+            end()
+        }
+        updateBackground(Gdx.graphics.deltaTime)
         engine.update(Gdx.graphics.deltaTime)
         pManager.render(spriteBatch as SpriteBatch)
     }
@@ -100,21 +127,19 @@ class Game : ApplicationAdapter() {
         pManager.pause()
     }
     override fun resize(width: Int, height: Int) {
-        injector.getInstance(Viewport::class.java).update(width,height,true)
+        viewport.update(width,height,true)
         pManager.resize(width,height)
     }
-    private fun bgDraw(sb: SpriteBatch) {
-        sb.begin()
-        sb.color = Color.DARK_GRAY
+
+    private fun drawBackground(sb: SpriteBatch) {
+        sb.color = Color.RED.cpy().sub(0.3f,0.3f,0.3f,0f)
         for ( rect in bgRect) {
-            sb.draw(texturePixel,rect.x,rect.y,rect.width,rect.height)
+            sb.draw(pixel,rect.x,rect.y,rect.width,rect.height)
         }
         sb.color = Color.WHITE
-        sb.end()
     }
     private val  speedMove = 50
-
-    private fun bgProcess(delta: Float) {
+    private fun updateBackground(delta: Float) {
         for ( rect in bgRect) {
             rect.y -=speedMove*delta
             if(rect.y < -rect.height) {
@@ -128,20 +153,21 @@ class Game : ApplicationAdapter() {
         pManager.resume()
     }
     override fun dispose() {
+        super.dispose()
         pManager.dispose()
         VisUI.dispose()
+        ttfFont.dispose()
+        atlas.dispose()
+        spriteBatch?.dispose()
     }
 
     companion object {
         lateinit var injector: Injector
-        val gameField = GameField(400f,600f,40f)
+        val gameField = GameField(480f,800f,40f)
         private val deadMob = Signal<Bot>()
         private val deadCell = Signal<Cell>()
+        lateinit var gs : GameService
 
-        fun cs(color : Float) {
-            Gdx.gl.glClearColor(color, color, color, 1f)
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-        }
         val processManager : ProcessManager
             get() = injector.getInstance(ProcessManager::class.java)
 
@@ -151,8 +177,6 @@ class Game : ApplicationAdapter() {
             get() = injector.getInstance(TextureAtlas::class.java)
         val engine : Engine
             get() = injector.getInstance(Engine::class.java)
-        val textButtonStyle : TextButton.TextButtonStyle
-            get() = injector.getInstance(TextButton.TextButtonStyle::class.java)
         val viewport : Viewport
             get() = injector.getInstance(Viewport::class.java)
 
@@ -165,8 +189,10 @@ class Game : ApplicationAdapter() {
         fun getBotListener() = injector.getInstance(BotListener::class.java)
         fun getCellListener() = injector.getInstance(CellListener::class.java)
 
-        lateinit var texturePixel : Texture
-
         var pause = false
+
+        fun getGameService(): GameService {
+            return gs
+        }
     }
 }

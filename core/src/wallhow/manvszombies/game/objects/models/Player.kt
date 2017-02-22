@@ -20,12 +20,11 @@ import wallhow.manvszombies.game.objects.models.gun.GunType
 /**
  * Created by wallhow on 22.01.17.
  */
-class Player : Entity() {
+class Player(position: Vector2) : Entity() {
     val gun: Gun
     init {
-        val view = Game.viewport
         add(CImage(Game.atlas.findRegion("player")).apply { scale = 1.2f })
-        add(CPosition(Vector2(view.worldWidth/2- CImage[this].width/2,0f- CImage[this].height/2)).apply {
+        add(CPosition(position.sub(CImage[this].width/2,CImage[this].height/2)).apply {
             zIndex = -position.y.toInt()
         })
         gun = Gun(this)

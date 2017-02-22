@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Json
-import wallhow.acentauri.ashley.components.extension.zIndex
 
 object GameState {
     var points: Int = 0 // Очки опыта
@@ -18,7 +17,7 @@ object GameState {
     /**
      * Характеристики уровня
      */
-    var level : Int = 20
+    var level : Int = 1
         private set
     var botsGreen: Int = 0
         private set
@@ -83,25 +82,25 @@ object Balance {
 }
 
 class GameRecords {
-    private val preferences: Preferences
+    private val preferences: Preferences = Gdx.app.getPreferences("localRecords")
     private var records : Array<Record>
+    private val storageKey = "GameRecords"
     init  {
-        preferences = Gdx.app.getPreferences("localRecords")
 
-        if(preferences.getString("records")=="") {
+        if(preferences.getString(storageKey)=="") {
             val records1 = Array<Record>()
             records1.add(record("Bob",3))
             records1.add(record("Mike",5))
-            records1.add(record("Sem",2))
+            records1.add(record("Sam",2))
             records1.add(record("Dr.Who",10))
             sortRecord(records1)
 
             val json = Json()
             val jsonString = json.toJson(records1)
-            preferences.putString("records",jsonString).flush()
+            preferences.putString(storageKey,jsonString).flush()
         }
         records = Array<Record>()
-        records = Json().fromJson(records.javaClass,preferences.getString("records"))
+        records = Json().fromJson(records.javaClass,preferences.getString(storageKey))
         sortRecord(records)
 
     }
@@ -109,8 +108,16 @@ class GameRecords {
         return Record().apply { namePlayer = name; this.wave = wave }
     }
 
+    fun flush() {
+        val json = Json()
+        val jsonString = json.toJson(records)
+        preferences.putString(storageKey,jsonString).flush()
+        sortRecord(records)
+        println("record flush")
+    }
+
     /**
-     * @param Массив рекордов для сортировки, рекорды сортируются - наивысший : ниже в массиве
+     * @param Масив рекордов для сортировки, рекорды сортируются - наивысший : ниже в массиве
      */
     fun sortRecord(records : Array<Record>) {
         records.sort { record, record1 -> if (record.wave < record1.wave) 1

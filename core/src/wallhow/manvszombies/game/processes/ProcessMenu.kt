@@ -3,37 +3,20 @@ package wallhow.manvszombies.game.processes
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.Pixmap
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.math.Interpolation
-import com.badlogic.gdx.math.MathUtils
-import com.badlogic.gdx.math.Rectangle
-import com.badlogic.gdx.scenes.scene2d.Action
+import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.actions.Actions
-import com.badlogic.gdx.scenes.scene2d.actions.ScaleByAction
-import com.badlogic.gdx.scenes.scene2d.actions.ScaleToAction
-import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction
 import com.badlogic.gdx.scenes.scene2d.ui.*
-import com.badlogic.gdx.scenes.scene2d.ui.List
-import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable
-import com.badlogic.gdx.utils.Align
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.viewport.Viewport
 import com.kotcrab.vis.ui.VisUI
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTextButton
-import ktx.style.defaultStyle
-import ktx.style.get
 import ktx.vis.table
 import wallhow.acentauri.process.ProcessManager
 import wallhow.acentauri.process.IProcess
-import wallhow.acentauri.utils.TTFFont
 import wallhow.manvszombies.game.Game
 import wallhow.manvszombies.game.objects.GameRecords
 
@@ -43,18 +26,19 @@ import wallhow.manvszombies.game.objects.GameRecords
 class ProcessMenu : IProcess {
     override val name: String
         get() = "menu"
-    private val menuStage: Stage
-    private val view: Viewport
-
-    init {
-        menuStage = Stage(Game.injector.getInstance(Viewport::class.java),Game.injector.getInstance(SpriteBatch::class.java))
-        view = Game.injector.getInstance(Viewport::class.java)
-
-    }
+    private val view = Game.injector.getInstance(Viewport::class.java)
+    private lateinit var menuStage: Stage
+    lateinit var socialGameRecords: Array<GameRecords.Record>
 
     override fun initialize(userInfo: Any) {
+        println("process menu")
+        menuStage = Stage(view, Game.injector.getInstance(SpriteBatch::class.java))
+
         menuStage.addActor(createVisUI())
         if((userInfo as String) == "default") {
+
+        }
+        else if(userInfo == "game") {
 
         }
      }
@@ -71,25 +55,32 @@ class ProcessMenu : IProcess {
             //Кнопки меню
             verticalGroup {
                 fill()
-                textButton(" START ").addListener {
-                    onButton("start")
-                    true
-                }
+                textButton(" START ").addCaptureListener(object : ClickListener() {
+                    override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                        onButton(Button.START)
+                    }
+                })
                 row()
                 textButton(" achievements ").addListener {
-                    onButton("achievements")
+                    onButton(Button.ACHIEVEMENTS)
                     true
                 }
                 row()
                 textButton(" OPTIONS ").addListener {
-                    onButton("options")
+                    onButton(Button.OPTIONS)
                     true
                 }
                 row()
                 textButton(" Login in ").addListener {
-                    onButton("loginIn")
+                    onButton(Button.LOGIN)
                     true
                 }
+                row()
+                textButton(" EXIT ").addCaptureListener(object : ClickListener() {
+                    override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                        onButton(Button.EXIT)
+                    }
+                })
                 row()
 
             }.padBottom(15f)
@@ -113,23 +104,10 @@ class ProcessMenu : IProcess {
                             label("${it.namePlayer} wave ${it.wave}")
                         }
                     }
-                }.padRight(20f).padLeft(20f)
-                separator { fill() }
-                verticalGroup {
-                    label("social"){
-                        color = Color.CYAN.cpy()
-                        color.a = 0.5f
-                    }
-                    list<VisLabel> {
-                        label("record 1")
-                        label("record 2")
-                        label("record 3")
-                        label("record 4")
-                    }
-                }.padLeft(20f).padRight(20f)
+                }
             }
-            setPosition(view.worldWidth/2,view.worldHeight/2)
-        }
+
+        }.apply { setPosition(view.worldWidth/2,view.worldHeight/2) }
     }
 
     override fun load() {
@@ -148,18 +126,23 @@ class ProcessMenu : IProcess {
     }
 
     override fun dispose() {
+        menuStage.dispose()
     }
 
     override fun getInputProcessListener(): InputProcessor {
         return menuStage
     }
 
-    private fun onButton(nameButton: String) {
-        when(nameButton) {
-            "start" -> {Game.processManager.setCurrentProcess("game")}
-            "achievements" -> {}
-            "options" -> {}
-            "loginIn" -> {}
+    private fun onButton(type: Button) {
+        when(type) {
+            Button.START-> {Game.processManager.setCurrentProcess("game")}
+            Button.ACHIEVEMENTS -> {}
+            Button.OPTIONS -> {}
+            Button.LOGIN -> {}
+            Button.EXIT -> {Gdx.app.exit()}
         }
+    }
+    private enum class Button {
+        START,ACHIEVEMENTS,OPTIONS,LOGIN,EXIT
     }
 }

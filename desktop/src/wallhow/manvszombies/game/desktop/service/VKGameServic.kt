@@ -14,9 +14,6 @@ import com.vk.api.sdk.httpclient.HttpTransportClient
 import wallhow.acentauri.utils.social.GameService
 import javax.xml.ws.http.HTTPException
 
-/**
- * Created by wallhow on 02.02.17.
- */
 class VKGameService : GameService {
     lateinit var vk: VkApiClient
     val app_id: Int = 5829473
@@ -44,6 +41,7 @@ class VKGameService : GameService {
             return true
         }
         catch(e: HTTPException) {
+            println(e.printStackTrace())
             return false
         }
     }
@@ -70,7 +68,8 @@ class VKGameService : GameService {
             val info = vk.users().get(userActor).userIds("${it}").execute()[0]
             user.firstName = info.firstName
             user.lastName = info.lastName
-            user.level = vk.apps().getScore(userActor,app_id).execute()
+            // TODO user.level = vk.apps().getScore(userActor,app_id).execute()
+            user.level = 0
             friends.add(user)
         }
         return friends

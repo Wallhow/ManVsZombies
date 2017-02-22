@@ -44,6 +44,7 @@ class ProcessManager : InputAdapter() {
         val process = currentProcess.name
         for(i in 0..processList.size-1) {
             if(processList[i].name == name) {
+                println("set process" + name)
                 currentProcess = processList[i]
                 currentProcess.initialize(process)
                 currentProcess.load()

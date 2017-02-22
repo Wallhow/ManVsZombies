@@ -14,7 +14,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.FillViewport
+import com.badlogic.gdx.utils.viewport.FitViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 import com.google.inject.Binder
 import com.google.inject.Module
@@ -23,6 +25,7 @@ import com.google.inject.Singleton
 import wallhow.acentauri.process.ProcessManager
 import wallhow.acentauri.utils.TTFFont
 import wallhow.acentauri.ashley.systems.*
+import wallhow.acentauri.utils.social.GameService
 import wallhow.manvszombies.game.objects.models.Bot
 import wallhow.manvszombies.game.objects.BotListener
 import wallhow.manvszombies.game.objects.CellListener
@@ -53,7 +56,7 @@ class GameModule(game: Game) : Module {
     }
     @Provides @Singleton
     fun viewport() : Viewport {
-        return FillViewport(400f,600f)
+        return FitViewport(480f,800f)
     }
     @Provides @Singleton
     fun ttfFont() : TTFFont {
