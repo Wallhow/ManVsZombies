@@ -3,7 +3,7 @@ package wallhow.manvszombies.game.objects
 import com.badlogic.ashley.signals.Listener
 import com.badlogic.ashley.signals.Signal
 import wallhow.manvszombies.game.Game
-import wallhow.manvszombies.game.components.DeleteMe
+import wallhow.acentauri.ashley.components.CDelete
 import wallhow.manvszombies.game.objects.models.Bot
 
 /**
@@ -18,6 +18,6 @@ class CellListener : Listener<Cell> {
         }
         cell.objects.clear()
         Game.gameField.removeCell(cell)
-        cell.add(DeleteMe())
+        cell.add(CDelete())
     }
 }

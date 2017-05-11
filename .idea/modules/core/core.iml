@@ -1,6 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module external.linked.project.id=":core" external.linked.project.path="$MODULE_DIR$/../../../core" external.root.project.path="$MODULE_DIR$/../../.." external.system.id="GRADLE" external.system.module.group="ManVsZombies" external.system.module.version="1.0" type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" inherit-compiler-output="false">
+  <component name="FacetManager">
+    <facet type="kotlin-language" name="Kotlin">
+      <configuration version="1">
+        <option name="compilerInfo">
+          <KotlinCompilerInfo>
+            <option name="compilerSettings">
+              <CompilerSettings />
+            </option>
+            <option name="k2jsCompilerArguments">
+              <K2JSCompilerArguments>
+                <option name="moduleKind" value="plain" />
+              </K2JSCompilerArguments>
+            </option>
+            <option name="k2jvmCompilerArguments">
+              <K2JVMCompilerArguments>
+                <option name="jvmTarget" value="1.6" />
+              </K2JVMCompilerArguments>
+            </option>
+            <option name="_commonCompilerArguments">
+              <DummyImpl>
+                <option name="languageVersion" value="1.0" />
+                <option name="apiVersion" value="1.0" />
+                <option name="pluginClasspaths">
+                  <array />
+                </option>
+                <option name="coroutinesWarn" value="true" />
+                <option name="pluginOptions">
+                  <array />
+                </option>
+              </DummyImpl>
+            </option>
+          </KotlinCompilerInfo>
+        </option>
+        <option name="useProjectSettings" value="false" />
+        <option name="versionInfo">
+          <KotlinVersionInfo>
+            <option name="apiLevel" value="1.0" />
+            <option name="languageLevel" value="1.0" />
+            <option name="targetPlatformName" value="JVM 1.6" />
+          </KotlinVersionInfo>
+        </option>
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager">
     <output url="file://$MODULE_DIR$/../../../core/build/classes/main" />
     <output-test url="file://$MODULE_DIR$/../../../core/build/classes/test" />
     <exclude-output />
@@ -17,6 +61,31 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Gradle: com.badlogicgames.gdx:gdx:1.9.5" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.czyzby:ktx-style:1.9.5-b1" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.czyzby:ktx-vis-style:1.9.5-b1" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.czyzby:ktx-scene2d:1.9.5-b1" level="project" />
+    <orderEntry type="library" name="Gradle: com.badlogicgames.gdx:gdx-freetype:1.9.5" level="project" />
+    <orderEntry type="library" name="Gradle: com.badlogicgames.ashley:ashley:1.7.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.vk.api:sdk:0.4.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.inject:guice:4.1.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.0.6" level="project" />
+    <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.22" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.commons:commons-collections4:4.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpmime:4.5.2" level="project" />
+    <orderEntry type="library" name="Gradle: commons-io:commons-io:2.5" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpclient:4.5.2" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.commons:commons-lang3:3.5" level="project" />
+    <orderEntry type="library" name="Gradle: javax.inject:javax.inject:1" level="project" />
+    <orderEntry type="library" name="Gradle: aopalliance:aopalliance:1.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.guava:guava:19.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-runtime:1.0.6" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpcore:4.4.4" level="project" />
+    <orderEntry type="library" name="Gradle: commons-logging:commons-logging:1.2" level="project" />
+    <orderEntry type="library" name="Gradle: commons-codec:commons-codec:1.9" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.czyzby:ktx-actors:1.9.5-b1" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.czyzby:ktx-vis:1.9.5-b1" level="project" />
+    <orderEntry type="library" name="Gradle: com.kotcrab.vis:vis-ui:1.2.4" level="project" />
     <orderEntry type="module-library">
       <library name="Gradle: ktx-collection-1.9.5-b1:5-b1">
         <CLASSES />
@@ -24,30 +93,5 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="Gradle: com.kotcrab.vis:vis-ui:1.2.4" level="project" />
-    <orderEntry type="library" name="Gradle: com.github.czyzby:ktx-vis:1.9.5-b1" level="project" />
-    <orderEntry type="library" name="Gradle: com.github.czyzby:ktx-actors:1.9.5-b1" level="project" />
-    <orderEntry type="library" name="Gradle: commons-codec:commons-codec:1.9" level="project" />
-    <orderEntry type="library" name="Gradle: commons-logging:commons-logging:1.2" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpcore:4.4.4" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-runtime:1.0.6" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.guava:guava:19.0" level="project" />
-    <orderEntry type="library" name="Gradle: aopalliance:aopalliance:1.0" level="project" />
-    <orderEntry type="library" name="Gradle: javax.inject:javax.inject:1" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.commons:commons-lang3:3.5" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.0" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpclient:4.5.2" level="project" />
-    <orderEntry type="library" name="Gradle: commons-io:commons-io:2.5" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpmime:4.5.2" level="project" />
-    <orderEntry type="library" name="Gradle: org.apache.commons:commons-collections4:4.1" level="project" />
-    <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.22" level="project" />
-    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.0.6" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.inject:guice:4.1.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Gradle: com.vk.api:sdk:0.4.1" level="project" />
-    <orderEntry type="library" name="Gradle: com.badlogicgames.ashley:ashley:1.7.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.badlogicgames.gdx:gdx-freetype:1.9.5" level="project" />
-    <orderEntry type="library" name="Gradle: com.github.czyzby:ktx-scene2d:1.9.5-b1" level="project" />
-    <orderEntry type="library" name="Gradle: com.github.czyzby:ktx-vis-style:1.9.5-b1" level="project" />
-    <orderEntry type="library" name="Gradle: com.github.czyzby:ktx-style:1.9.5-b1" level="project" />
   </component>
 </module>

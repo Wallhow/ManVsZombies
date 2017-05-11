@@ -1,11 +1,13 @@
 <component name="libraryTable">
   <library name="Gradle: com.google.inject:guice:4.1.1-SNAPSHOT">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.inject/guice/4.1.1-SNAPSHOT/c4084ad5db3f9a6ed56351030f6422afd204dbed/guice-4.1.1-SNAPSHOT.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.inject/guice/4.1.1-SNAPSHOT/804112c5628fcd25ff4798b2b1e3922a1531a2d5/guice-4.1.1-SNAPSHOT.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.inject/guice/4.1.1-SNAPSHOT/e5ae0cd968801bb881a3c53a3f58de421f5e8949/guice-4.1.1-SNAPSHOT.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.inject/guice/4.1.1-SNAPSHOT/36b3d65de385827ab8296057fcfd015181e38ee9/guice-4.1.1-SNAPSHOT-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.inject/guice/4.1.1-SNAPSHOT/67c1037f312da7844f32d92a772019cf91d0d5a5/guice-4.1.1-SNAPSHOT-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.inject/guice/4.1.1-SNAPSHOT/e357fe3d08121a234410835304e35ecce99fc021/guice-4.1.1-SNAPSHOT-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

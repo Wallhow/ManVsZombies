@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Json
+import com.google.gson.reflect.TypeToken
 
 object GameState {
     var points: Int = 0 // Очки опыта
@@ -51,6 +52,8 @@ object GameState {
         level = 1
         botsCount = 0
     }
+
+    var isOnline = false
 }
 
 /**
@@ -134,4 +137,41 @@ class GameRecords {
         return records
     }
 
+}
+
+class Achievements(val preferences: Preferences) {
+    private var internals: kotlin.Array<Int>
+    private val storageKey = "a4ievements"
+    init {
+        internals = kotlin.Array(Internal.values().size) {
+            0
+        }
+    }
+
+    fun get(type : Internal) : Int {
+        return internals[type.ordinal]
+    }
+    fun set(type : Internal, flag: Int) {
+        internals[type.ordinal] = flag
+    }
+    fun flush() {
+        preferences.putString(storageKey,Json().toJson(internals))
+    }
+    fun load() {
+        internals = Json().fromJson(internals.javaClass, preferences.getString(storageKey))
+    }
+
+    enum class Internal(val nameAchievement: String,val text: String) {
+        Killed25Bots("Убить 25 зомби!","Текст ачивки"),
+        Killed50Bots("Убить 50 ботов!","Текст ачивки"),
+        Replay2("Азарт!","Переиграть игру"),
+        Replay5("Войти во вкус.","Переиграть игру 5 раз"),
+        Replay10("replay 10","Текст ачивки"),
+        Test1("test","test"),
+        Test2("test","test"),
+        Test3("test","test"),
+        Test4("test","test"),
+        Test5("test","test"),
+        Test6("test","test"),
+    }
 }

@@ -17,7 +17,7 @@ class CImage(var texture: TextureRegion,
     var timeBetweenFrames = 0.1f // задержка между кадрами
     val frameCount: Int // кол-во кадров всего
     var frameSequence : IntArray
-    var color: Color
+    var color: Color = Color.WHITE.cpy()
     var time = 0.0f
     private var textureFrames: Array<TextureRegion> = Array() // кадры анимации
     private var currentFrame = 0 // Текущий кадр
@@ -50,7 +50,6 @@ class CImage(var texture: TextureRegion,
         }else
             frameSequence =  IntRange(0,frameCount-1).toList().toIntArray()
 
-        color = Color.WHITE
     }
 
 

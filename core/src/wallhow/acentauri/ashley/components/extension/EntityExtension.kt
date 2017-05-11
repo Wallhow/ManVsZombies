@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.*
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.ashley.utils.ImmutableArray
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Intersector
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector
@@ -45,6 +46,11 @@ var Entity.color : Color
 val Entity.halfSize : Vector2
     get() = Vector2(width/2,height/2)
 
+/**
+ * Компонент спрайта
+ */
+val Entity.sprite : Sprite
+    get() = CSprite[this].image
 
 /**
  * CollideBoxComponent
@@ -64,3 +70,6 @@ fun <T : Component> Entity.tryGet(componentResolver: ComponentResolver<T>) : T? 
 val Entity.controllerListener: ControllerListener
     get() = CPlayerController[this].controllerListener
 
+fun Entity.deleteMe() {
+    this.add(CDelete())
+}

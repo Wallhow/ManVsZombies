@@ -14,15 +14,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-import com.badlogic.gdx.utils.viewport.ExtendViewport
-import com.badlogic.gdx.utils.viewport.FillViewport
-import com.badlogic.gdx.utils.viewport.FitViewport
-import com.badlogic.gdx.utils.viewport.Viewport
+import com.badlogic.gdx.utils.viewport.*
 import com.google.inject.Binder
 import com.google.inject.Module
 import com.google.inject.Provides
 import com.google.inject.Singleton
-import wallhow.acentauri.process.ProcessManager
+import wallhow.acentauri.state.StateManager
 import wallhow.acentauri.utils.TTFFont
 import wallhow.acentauri.ashley.systems.*
 import wallhow.acentauri.utils.social.GameService
@@ -31,7 +28,7 @@ import wallhow.manvszombies.game.objects.BotListener
 import wallhow.manvszombies.game.objects.CellListener
 import wallhow.manvszombies.game.objects.GameRecords
 import wallhow.manvszombies.game.objects.models.gun.GunSystem
-import wallhow.manvszombies.game.processes.ProcessGame
+import wallhow.manvszombies.game.states.StateGame
 import wallhow.manvszombies.game.systems.*
 
 class GameModule(game: Game) : Module {
@@ -51,8 +48,8 @@ class GameModule(game: Game) : Module {
     }
 
     @Provides @Singleton
-    fun processManager() : ProcessManager {
-        return ProcessManager()
+    fun processManager() : StateManager {
+        return StateManager()
     }
     @Provides @Singleton
     fun viewport() : Viewport {
@@ -76,16 +73,17 @@ class GameModule(game: Game) : Module {
     @Provides @Singleton
     fun systems ( ) : Systems {
         return Systems(listOf(
-                MovementSystem::class.java,DrawDebugSystem::class.java,
+                MovementSystem::class.java,//DrawDebugSystem::class.java,
                 DrawImageSystem::class.java,
-                DrawHealthSystem::class.java,
-                TaskSystem::class.java,
-                KickSystem::class.java,
-                DeleteMeSystem::class.java,
-                GunSystem::class.java,
-                KickMobSystem::class.java,
-                ActionsSystem::class.java,
-                ShakeCellSystem::class.java
+                DrawSpriteSystem::class.java,
+                //DrawHealthSystem::class.java,
+                //TaskSystem::class.java,
+                //KickSystem::class.java,
+                DeleteSystem::class.java
+                //GunSystem::class.java,
+                //KickMobSystem::class.java,
+                //ActionsSystem::class.java,
+                //ShakeCellSystem::class.java,
                 //InvisibleSystem::class.java
         ))
     }

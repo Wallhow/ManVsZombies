@@ -14,23 +14,24 @@ import com.google.inject.*
 import com.kotcrab.vis.ui.VisUI
 import wallhow.acentauri.CoreGame
 import wallhow.acentauri.extension.graphics.drawGridLine
-import wallhow.acentauri.process.ProcessManager
+import wallhow.acentauri.state.StateManager
 import wallhow.acentauri.utils.ozmod.APlayer
 import wallhow.acentauri.utils.TTFFont
 import wallhow.acentauri.utils.social.GameService
+import wallhow.dreamlo.sdk.DreamloSDK
 import wallhow.manvszombies.game.objects.*
 import wallhow.manvszombies.game.objects.models.Bot
-import wallhow.manvszombies.game.processes.ProcessGame
-import wallhow.manvszombies.game.processes.ProcessMenu
+import wallhow.manvszombies.game.states.StateGame
+import wallhow.manvszombies.game.states.StateMenu
 
 /**
  * Created by wallhow on 09.01.17.
  */
 class Game(gameService: GameService) : CoreGame() {
     var spriteBatch: SpriteBatch? = null
-    private lateinit var pManager: ProcessManager
-    private lateinit var menu : ProcessMenu
-    private lateinit var game : ProcessGame
+    private lateinit var pManager: StateManager
+    private lateinit var menu : StateMenu
+    private lateinit var game : StateGame
     lateinit var gameRecords: GameRecords
 
 
@@ -42,7 +43,6 @@ class Game(gameService: GameService) : CoreGame() {
     init {
         //Test
         gs = gameService
-
     }
 
     private fun createBackground(count : Int): Array<Rectangle> {
@@ -59,6 +59,7 @@ class Game(gameService: GameService) : CoreGame() {
 
     override fun create() {
         super.create()
+        dreamloSDK = DreamloSDK("58aed71468fc111e808411c7","PQQZwh_kZkSYXwCCHL6ItwHy8bppH-z0OpesFvQPh9Yw")
 
         val authSocial = false//gs.authorize("7ddf459aea673ce1e4")//Gdx.app.getPreferences("service").getString("code"))
 
@@ -71,6 +72,7 @@ class Game(gameService: GameService) : CoreGame() {
                 }
                 socialRecords.add(record)
             }
+
         } else {
             for (i in 0..3) {
                 val record = GameRecords.Record()
@@ -82,11 +84,12 @@ class Game(gameService: GameService) : CoreGame() {
         }
 
         gameRecords = GameRecords()
+        achievemets = Achievements(Gdx.app.getPreferences("localStorageA"))
 
         VisUI.load(VisUI.SkinScale.X2) // ГУЙ
 
-        audioPlayer.addMusic("assets/sounds/test4.xm","music")
-        audioPlayer.addMusic("assets/sounds/test.mod","music1")
+        //audioPlayer.addMusic("assets/sounds/test4.xm","music")
+        //audioPlayer.addMusic("assets/sounds/test.mod","music1")
         //audioPlayer.play("music1")
 
         injector = Guice.createInjector(GameModule(this))
@@ -99,9 +102,9 @@ class Game(gameService: GameService) : CoreGame() {
         injector.getInstance(Systems::class.java).list.map { injector.getInstance(it) }.forEach { system ->
             engine.addSystem(system)
         }
-        pManager = processManager
-        menu = ProcessMenu().apply { socialGameRecords = socialRecords }
-        game = ProcessGame()
+        pManager = stateManager
+        menu = StateMenu().apply { socialGameRecords = socialRecords }
+        game = StateGame()
         Gdx.input.inputProcessor = pManager
 
         pManager.addProcess(menu,true)
@@ -128,6 +131,7 @@ class Game(gameService: GameService) : CoreGame() {
     }
     override fun resize(width: Int, height: Int) {
         viewport.update(width,height,true)
+        viewport.apply()
         pManager.resize(width,height)
     }
 
@@ -153,6 +157,7 @@ class Game(gameService: GameService) : CoreGame() {
         pManager.resume()
     }
     override fun dispose() {
+        dreamloSDK.leaderboard.saveInLocalStorage()
         super.dispose()
         pManager.dispose()
         VisUI.dispose()
@@ -167,9 +172,10 @@ class Game(gameService: GameService) : CoreGame() {
         private val deadMob = Signal<Bot>()
         private val deadCell = Signal<Cell>()
         lateinit var gs : GameService
+        lateinit var dreamloSDK : DreamloSDK
 
-        val processManager : ProcessManager
-            get() = injector.getInstance(ProcessManager::class.java)
+        val stateManager: StateManager
+            get() = injector.getInstance(StateManager::class.java)
 
         val ttfFont : TTFFont
             get() = injector.getInstance(TTFFont::class.java)
@@ -194,5 +200,7 @@ class Game(gameService: GameService) : CoreGame() {
         fun getGameService(): GameService {
             return gs
         }
+
+        lateinit var achievemets: Achievements
     }
 }

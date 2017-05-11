@@ -17,7 +17,6 @@ class MovementSystem @Inject constructor()  : IteratingSystem(Family.all(CMoveme
     override fun processEntity(entity: Entity, deltaTime: Float) {
         val position = entity.position
         val move = entity.movementComponent
-
         position.add(move.velocity.x*deltaTime,move.velocity.y*deltaTime)
     }
 }

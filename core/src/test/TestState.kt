@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import wallhow.acentauri.ashley.components.CImage
 import wallhow.acentauri.ashley.components.CPosition
-import wallhow.acentauri.process.ProcessManager
+import wallhow.acentauri.state.StateManager
 import wallhow.manvszombies.game.Game
 import wallhow.manvszombies.game.objects.Cell
 import wallhow.manvszombies.game.objects.GameField
@@ -18,12 +18,12 @@ import wallhow.manvszombies.game.objects.GameField
 /**
  * Created by wallhow on 15.02.17.
  */
-class TestProcess() : ProcessManager.ProcessAdapter("test") {
+class TestState() : StateManager.StateAdapter("test") {
     private lateinit var gameField : GameField
     private lateinit var input : InputAdapter
 
-    override fun initialize(userInfo: Any) {
-        super.initialize(userInfo)
+    override fun initialize() {
+        super.initialize()
 
         //
         val cellTexture = TextureRegion(Texture(Gdx.files.internal("assets/cells16x16.png")))

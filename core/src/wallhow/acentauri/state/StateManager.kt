@@ -1,4 +1,4 @@
-package wallhow.acentauri.process
+package wallhow.acentauri.state
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputAdapter
@@ -11,63 +11,61 @@ import com.badlogic.gdx.utils.GdxRuntimeException
 /**
  * Created by wallhow on 12.01.17.
  */
-class ProcessManager : InputAdapter() {
-    private val processList = Array<IProcess>()
-    private var currentProcess: IProcess
+class StateManager : InputAdapter() {
+    private val processList = Array<State>()
+    private var currentProcess: State
 
     init {
-        currentProcess = ProcessAdapter("default")
+        currentProcess = StateAdapter("default")
     }
 
-    fun addProcess(process: IProcess, current : Boolean = false) {
+    fun addProcess(process: State, current : Boolean = false) {
         for(i in 0..processList.size-1) {
             if(processList[i].name == process.name) {
                 return
             }
         }
+        process.initialize()
         processList.add(process)
         if(current)
             setCurrentProcess(process.name)
     }
 
-    fun removeProcess(process: IProcess) {
+    fun removeProcess(process: State) {
         for(i in 0..processList.size-1) {
             if(processList[i].name == process.name) {
                 processList.removeIndex(i)
                 return
             }
         }
-        return throw GdxRuntimeException("process не найден")
+        throw GdxRuntimeException("state не найден")
     }
 
     fun setCurrentProcess(name: String) {
-        val process = currentProcess.name
         for(i in 0..processList.size-1) {
             if(processList[i].name == name) {
-                println("set process" + name)
+                processList[i].load(currentProcess)
                 currentProcess = processList[i]
-                currentProcess.initialize(process)
-                currentProcess.load()
                 return
             }
         }
     }
 
     fun show() {
-
+        currentProcess.load(currentProcess)
     }
 
     fun pause() {
-        currentProcess.event(EventProcess.Pause)
+        currentProcess.event(Event.Pause)
     }
 
     fun resize(width: Int, height: Int) {
-        EventProcess.Resize.data = Vector2(width.toFloat(),height.toFloat())
-        currentProcess.event(EventProcess.Resize)
+        Event.Resize.data = Vector2(width.toFloat(),height.toFloat())
+        currentProcess.event(Event.Resize)
     }
 
     fun hide() {
-        currentProcess.event(EventProcess.Hide)
+        currentProcess.event(Event.Hide)
     }
 
     fun render(spriteBatch: SpriteBatch) {
@@ -76,11 +74,11 @@ class ProcessManager : InputAdapter() {
     }
 
     fun resume() {
-        currentProcess.event(EventProcess.Resume)
+        currentProcess.event(Event.Resume)
     }
 
     fun dispose() {
-        processList.forEach(IProcess::dispose)
+        processList.forEach(State::dispose)
     }
 
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
@@ -103,15 +101,15 @@ class ProcessManager : InputAdapter() {
         return false
     }
 
-    enum class EventProcess(var data: Any?) {
+    enum class Event(var data: Any?) {
         Pause(null),Resize(Vector2()),Hide(null),Resume(null)
     }
-    open class ProcessAdapter(override val name: String) : IProcess {
-        override fun initialize(userInfo: Any) {
+    open class StateAdapter(override val name: String) : State {
+        override fun initialize() {
 
         }
 
-        override fun load() {
+        override fun load(context: State) {
         }
 
         override fun render(sb: SpriteBatch) {
@@ -121,7 +119,7 @@ class ProcessManager : InputAdapter() {
 
         }
 
-        override fun event(event: EventProcess) {
+        override fun event(event: Event) {
         }
 
         override fun dispose() {

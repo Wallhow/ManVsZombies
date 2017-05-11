@@ -7,7 +7,7 @@ import com.badlogic.ashley.signals.Signal
 import wallhow.acentauri.ashley.components.extension.tryGet
 import wallhow.manvszombies.game.Game
 import wallhow.manvszombies.game.components.CKick
-import wallhow.manvszombies.game.components.DeleteMe
+import wallhow.acentauri.ashley.components.CDelete
 import wallhow.manvszombies.game.objects.models.Bot
 import wallhow.manvszombies.game.objects.models.TypeZombie
 import wallhow.manvszombies.game.objects.models.Zombie
@@ -29,7 +29,7 @@ class BotListener : Listener<Bot> , EntityListener {
     }
 
     override fun receive(signal: Signal<Bot>?, bot: Bot) {
-        bot.add(DeleteMe())
+        bot.add(CDelete())
 
         when((bot as Zombie).type) {
             TypeZombie.GREEN -> { GameState.points += 100; GameState.greenKilled++ }

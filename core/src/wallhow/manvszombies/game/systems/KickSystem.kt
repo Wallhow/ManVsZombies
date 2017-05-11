@@ -7,13 +7,13 @@ import com.google.inject.Inject
 import wallhow.manvszombies.game.Game
 import wallhow.manvszombies.game.components.CHealth
 import wallhow.manvszombies.game.components.CKick
-import wallhow.manvszombies.game.components.DeleteMe
+import wallhow.acentauri.ashley.components.CDelete
 import wallhow.manvszombies.game.objects.Cell
 
 /**
  * Created by wallhow on 22.01.17.
  */
-class KickSystem @Inject constructor() : IteratingSystem(Family.all(CKick::class.java).exclude(DeleteMe::class.java).get()) {
+class KickSystem @Inject constructor() : IteratingSystem(Family.all(CKick::class.java).exclude(CDelete::class.java).get()) {
     override fun processEntity(entity: Entity, deltaTime: Float) {
         val kick = CKick[entity]
         kick.currentTime +=deltaTime

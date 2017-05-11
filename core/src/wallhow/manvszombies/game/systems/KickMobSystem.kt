@@ -16,7 +16,7 @@ import wallhow.acentauri.ashley.components.extension.*
 import wallhow.manvszombies.game.Game
 import wallhow.manvszombies.game.components.CHealth
 import wallhow.manvszombies.game.components.CKickMob
-import wallhow.manvszombies.game.components.DeleteMe
+import wallhow.acentauri.ashley.components.CDelete
 import wallhow.manvszombies.game.components.actions.CColorAction
 import wallhow.manvszombies.game.components.actions.CDeletAction
 import wallhow.manvszombies.game.components.actions.CSequenceAction
@@ -31,7 +31,7 @@ class KickMobSystem @Inject constructor() : IteratingSystem(Family.all(CKickMob:
     override fun processEntity(entity: Entity, deltaTime: Float) {
         if(entity.position.x < -20 || entity.position.y < 0 ||
                 entity.position.x>Game.viewport.worldWidth || entity.position.y>Game.viewport.worldHeight+20) {
-            entity.add(DeleteMe())
+            entity.add(CDelete())
             return
         }
 
@@ -73,7 +73,7 @@ class KickMobSystem @Inject constructor() : IteratingSystem(Family.all(CKickMob:
                     // Обробатываем его убийство
                     Game.getDeadMobSignaler().dispatch(it as Bot)
                 }
-                entity.add(DeleteMe())
+                entity.add(CDelete())
             }
         }
     }

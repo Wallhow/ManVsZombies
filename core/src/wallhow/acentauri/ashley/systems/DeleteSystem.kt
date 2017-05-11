@@ -1,15 +1,15 @@
-package wallhow.manvszombies.game.systems
+package wallhow.acentauri.ashley.systems
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
 import com.google.inject.Inject
-import wallhow.manvszombies.game.components.DeleteMe
+import wallhow.acentauri.ashley.components.CDelete
 
 /**
  * Created by wallhow on 22.01.17.
  */
-class DeleteMeSystem @Inject constructor() : IteratingSystem(Family.all(DeleteMe::class.java).get()){
+class DeleteSystem @Inject constructor() : IteratingSystem(Family.all(CDelete::class.java).get()){
     override fun processEntity(entity: Entity, deltaTime: Float) {
         engine.removeEntity(entity)
     }

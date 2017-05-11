@@ -3,7 +3,7 @@ package wallhow.manvszombies.game.components.actions
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.Color
 import wallhow.acentauri.ashley.components.extension.color
-import wallhow.manvszombies.game.components.DeleteMe
+import wallhow.acentauri.ashley.components.CDelete
 
 /**
  * Created by wallhow on 22.01.17.
@@ -15,7 +15,7 @@ class CDeletAction(val time: Float) : CAction {
     override fun update(entity: Entity, delta: Float) {
         currentTime+=delta
         if(currentTime>=time) {
-            entity.add(DeleteMe())
+            entity.add(CDelete())
         }
     }
 }
