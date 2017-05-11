@@ -89,15 +89,15 @@ object Balance {
 class GameRecords {
     private val preferences: Preferences = Gdx.app.getPreferences("localRecords")
     private var records : Array<Record>
-    private val storageKey = "GameRecords"
-    private var botKilled = HashMap<TypeZombie,Int>()
+    private val storageKey = "Game_|_Records"
+    private var botKilled = HashMap<String,Int>()
     init  {
 
         if(preferences.getString(storageKey)=="") {
             val records1 = Array<Record>()
-            records1.add(record("Bob",3))
+            records1.add(record("IronMan",11))
             records1.add(record("Mike",5))
-            records1.add(record("Sam",2))
+            records1.add(record("WabaFet",2))
             records1.add(record("Dr.Who",10))
             sortRecord(records1)
 
@@ -105,9 +105,9 @@ class GameRecords {
             val jsonString = json.toJson(records1)
             preferences.putString(storageKey,jsonString).flush()
 
-            botKilled.put(TypeZombie.BLUE,0)
-            botKilled.put(TypeZombie.GREEN,0)
-            botKilled.put(TypeZombie.RED,0)
+            botKilled.put(TypeZombie.BLUE.name,0)
+            botKilled.put(TypeZombie.GREEN.name,0)
+            botKilled.put(TypeZombie.RED.name,0)
 
             preferences.putString("botKilled",json.toJson(botKilled))
         }
@@ -115,13 +115,16 @@ class GameRecords {
         records = Json().fromJson(records.javaClass,preferences.getString(storageKey))
         sortRecord(records)
         botKilled = Json().fromJson(botKilled.javaClass,preferences.getString("botKilled"))
+        println(botKilled.toString())
     }
     fun record(name: String,wave: Int) : Record {
         return Record().apply { namePlayer = name; this.wave = wave }
     }
     fun killBot(type :TypeZombie) {
-        val d = botKilled[type]!! + 1
-        botKilled.put(type,d)
+        println(type)
+        println(botKilled[type.name])
+        val d = botKilled[type.name]!! + 1
+        botKilled.put(type.name,d)
     }
 
     fun flush() {

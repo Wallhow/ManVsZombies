@@ -1,5 +1,7 @@
 package wallhow.acentauri.utils.ozmod
 
+import com.badlogic.gdx.Application
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.utils.GdxRuntimeException
@@ -28,10 +30,15 @@ class APlayer {
     fun play(descriptor: String) {
         try {
             chipPlayer?.done()
+            if(Gdx.app.type == Application.ApplicationType.Desktop) {
+                chipPlayer?.setFrequency(frequency[2])
+            }
+            else {
+                frequency[0]
+            }
             chipPlayer = ozMod.getPlayer(listMusic.get(descriptor))
             chipPlayer?.setDaemon(true)
             chipPlayer?.isLoopable = false
-            chipPlayer?.setFrequency(frequency[0])
         }
         catch (e: Exception) {
             System.out.println(" не удалось загрузить $descriptor")

@@ -76,15 +76,14 @@ class GameModule(game: Game) : Module {
                 MovementSystem::class.java,//DrawDebugSystem::class.java,
                 DrawImageSystem::class.java,
                 DrawSpriteSystem::class.java,
-                //DrawHealthSystem::class.java,
-                //TaskSystem::class.java,
-                //KickSystem::class.java,
-                DeleteSystem::class.java
-                //GunSystem::class.java,
-                //KickMobSystem::class.java,
-                //ActionsSystem::class.java,
-                //ShakeCellSystem::class.java,
-                //InvisibleSystem::class.java
+                DrawHealthSystem::class.java,
+                TaskSystem::class.java,
+                KickSystem::class.java,
+                DeleteSystem::class.java,
+                GunSystem::class.java,
+                KickMobSystem::class.java,
+                ActionsSystem::class.java,
+                ShakeCellSystem::class.java
         ))
     }
     @Provides @Singleton

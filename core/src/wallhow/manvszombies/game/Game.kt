@@ -88,8 +88,8 @@ class Game(gameService: GameService) : CoreGame() {
 
         VisUI.load(VisUI.SkinScale.X2) // ГУЙ
 
-        //audioPlayer.addMusic("assets/sounds/test4.xm","music")
-        //audioPlayer.addMusic("assets/sounds/test.mod","music1")
+        audioPlayer.addMusic("assets/sounds/test4.xm","music")
+        audioPlayer.addMusic("assets/sounds/test.mod","music1")
         //audioPlayer.play("music1")
 
         injector = Guice.createInjector(GameModule(this))
@@ -157,6 +157,7 @@ class Game(gameService: GameService) : CoreGame() {
         pManager.resume()
     }
     override fun dispose() {
+        audioPlayer.chipPlayer?.done()
         dreamloSDK.leaderboard.saveInLocalStorage()
         Game.injector.getInstance(GameRecords::class.java).flush()
         super.dispose()
