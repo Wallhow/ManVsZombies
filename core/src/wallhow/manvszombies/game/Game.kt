@@ -158,6 +158,7 @@ class Game(gameService: GameService) : CoreGame() {
     }
     override fun dispose() {
         dreamloSDK.leaderboard.saveInLocalStorage()
+        Game.injector.getInstance(GameRecords::class.java).flush()
         super.dispose()
         pManager.dispose()
         VisUI.dispose()

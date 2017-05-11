@@ -5,6 +5,8 @@ import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Json
 import com.google.gson.reflect.TypeToken
+import wallhow.manvszombies.game.objects.models.TypeZombie
+import java.util.*
 
 object GameState {
     var points: Int = 0 // Очки опыта
@@ -88,6 +90,7 @@ class GameRecords {
     private val preferences: Preferences = Gdx.app.getPreferences("localRecords")
     private var records : Array<Record>
     private val storageKey = "GameRecords"
+    private var botKilled = HashMap<TypeZombie,Int>()
     init  {
 
         if(preferences.getString(storageKey)=="") {
@@ -101,20 +104,31 @@ class GameRecords {
             val json = Json()
             val jsonString = json.toJson(records1)
             preferences.putString(storageKey,jsonString).flush()
+
+            botKilled.put(TypeZombie.BLUE,0)
+            botKilled.put(TypeZombie.GREEN,0)
+            botKilled.put(TypeZombie.RED,0)
+
+            preferences.putString("botKilled",json.toJson(botKilled))
         }
         records = Array<Record>()
         records = Json().fromJson(records.javaClass,preferences.getString(storageKey))
         sortRecord(records)
-
+        botKilled = Json().fromJson(botKilled.javaClass,preferences.getString("botKilled"))
     }
     fun record(name: String,wave: Int) : Record {
         return Record().apply { namePlayer = name; this.wave = wave }
+    }
+    fun killBot(type :TypeZombie) {
+        val d = botKilled[type]!! + 1
+        botKilled.put(type,d)
     }
 
     fun flush() {
         val json = Json()
         val jsonString = json.toJson(records)
         preferences.putString(storageKey,jsonString).flush()
+        preferences.putString("botKilled",json.toJson(botKilled))
         sortRecord(records)
         println("record flush")
     }

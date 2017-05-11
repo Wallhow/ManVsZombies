@@ -30,11 +30,12 @@ class BotListener : Listener<Bot> , EntityListener {
 
     override fun receive(signal: Signal<Bot>?, bot: Bot) {
         bot.add(CDelete())
-
+        val records = Game.injector.getInstance(GameRecords::class.java)
         when((bot as Zombie).type) {
-            TypeZombie.GREEN -> { GameState.points += 100; GameState.greenKilled++ }
-            TypeZombie.BLUE -> { GameState.points += 30; GameState.blueKilled++ }
-            TypeZombie.RED -> { GameState.points += 120; GameState.redKilled++ }
+            TypeZombie.GREEN -> { GameState.points += 100; GameState.greenKilled++; records.killBot(TypeZombie.GREEN)}
+            TypeZombie.BLUE -> { GameState.points += 30; GameState.blueKilled++; records.killBot(TypeZombie.BLUE) }
+            TypeZombie.RED -> { GameState.points += 120; GameState.redKilled++; records.killBot(TypeZombie.RED) }
+
         }
 
 
