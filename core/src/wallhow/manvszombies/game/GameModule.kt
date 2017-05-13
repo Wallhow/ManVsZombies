@@ -28,6 +28,7 @@ import wallhow.manvszombies.game.objects.BotListener
 import wallhow.manvszombies.game.objects.CellListener
 import wallhow.manvszombies.game.objects.GameRecords
 import wallhow.manvszombies.game.objects.models.gun.GunSystem
+import wallhow.manvszombies.game.objects.models.weapons.abstracts.WeaponSystem
 import wallhow.manvszombies.game.states.StateGame
 import wallhow.manvszombies.game.systems.*
 
@@ -80,7 +81,7 @@ class GameModule(game: Game) : Module {
                 TaskSystem::class.java,
                 KickSystem::class.java,
                 DeleteSystem::class.java,
-                GunSystem::class.java,
+                WeaponSystem::class.java,
                 KickMobSystem::class.java,
                 ActionsSystem::class.java,
                 ShakeCellSystem::class.java

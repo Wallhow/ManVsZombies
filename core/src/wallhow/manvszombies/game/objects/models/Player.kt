@@ -16,18 +16,39 @@ import wallhow.manvszombies.game.components.CKickMob
 import wallhow.manvszombies.game.objects.Balance
 import wallhow.manvszombies.game.objects.models.gun.Gun
 import wallhow.manvszombies.game.objects.models.gun.GunType
+import wallhow.manvszombies.game.objects.models.weapons.*
+import wallhow.manvszombies.game.objects.models.weapons.abstracts.AWeapon
+import wallhow.manvszombies.game.objects.models.weapons.abstracts.Weapon
+import wallhow.manvszombies.game.objects.models.weapons.rifles.RifleBlue
+import wallhow.manvszombies.game.objects.models.weapons.rifles.RifleGreen
+import wallhow.manvszombies.game.objects.models.weapons.rifles.RifleRed
+import java.util.*
 
 /**
  * Created by wallhow on 22.01.17.
  */
 class Player(position: Vector2) : Entity() {
     val gun: Gun
+
+    var weapon : Weapon
+
+    var weapons : Map<WeaponsType, Weapon>
     init {
         add(CImage(Game.atlas.findRegion("player")).apply { scale = 1.2f })
         add(CPosition(position.sub(CImage[this].width/2,CImage[this].height/2)).apply {
             zIndex = -position.y.toInt()
         })
         gun = Gun(this)
+
+        weapon = RifleGreen(this)
+
+        weapons = HashMap<WeaponsType, Weapon>().apply {
+            put(WeaponsType.RifleGreen, RifleGreen(this@Player))
+            put(WeaponsType.RifleRed, RifleRed(this@Player))
+            put(WeaponsType.RifleBlue, RifleBlue(this@Player))
+        }
+
+        Game.engine.addEntity(weapon as Entity)
         Game.engine.addEntity(gun)
     }
 
@@ -37,22 +58,31 @@ class Player(position: Vector2) : Entity() {
         val a = d.angle()
         CImage[this].rotation = a - 90
         gun.shot(d)
+
+        weapon.shot(d)
     }
 
     fun getMaxCountBullet() : Int {
-        return CGun[gun].max_bullets
+        return weapon.characteristic().maxCharge
     }
     fun getCountBullet() : Int {
-        return  CGun[gun].bullets
+        return  weapon.currentCharge
     }
 
+
     fun takeRedGun() {
-        CGun[gun].gunType = GunType.RED
+        setWeapon(WeaponsType.RifleRed)
     }
     fun takeGreenGun() {
-        CGun[gun].gunType = GunType.GREEN
+        setWeapon(WeaponsType.RifleGreen)
     }
     fun takeBlueGun() {
-        CGun[gun].gunType = GunType.BLUE
+        setWeapon(WeaponsType.RifleBlue)
+    }
+
+    private fun setWeapon(type: WeaponsType) {
+        Game.engine.removeEntity(weapon as Entity)
+        weapon = weapons[type] as AWeapon
+        Game.engine.addEntity(weapon as Entity)
     }
 }
