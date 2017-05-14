@@ -28,7 +28,7 @@ import java.util.*
  * Created by wallhow on 22.01.17.
  */
 class Player(position: Vector2) : Entity() {
-    val gun: Gun
+    //val gun: Gun
 
     var weapon : Weapon
 
@@ -38,18 +38,18 @@ class Player(position: Vector2) : Entity() {
         add(CPosition(position.sub(CImage[this].width/2,CImage[this].height/2)).apply {
             zIndex = -position.y.toInt()
         })
-        gun = Gun(this)
-
-        weapon = RifleGreen(this)
+        //gun = Gun(this)
 
         weapons = HashMap<WeaponsType, Weapon>().apply {
             put(WeaponsType.RifleGreen, RifleGreen(this@Player))
             put(WeaponsType.RifleRed, RifleRed(this@Player))
             put(WeaponsType.RifleBlue, RifleBlue(this@Player))
+            put(WeaponsType.NyanLaser, Laser(this@Player))
         }
+        weapon = weapons[WeaponsType.NyanLaser] as Weapon
 
         Game.engine.addEntity(weapon as Entity)
-        Game.engine.addEntity(gun)
+        //Game.engine.addEntity(gun)
     }
 
     fun see(x: Float,y : Float) {
@@ -57,8 +57,9 @@ class Player(position: Vector2) : Entity() {
                 CPosition[this].position.y+ CImage[this].height/2).nor()
         val a = d.angle()
         CImage[this].rotation = a - 90
-        gun.shot(d)
+        //gun.shot(d)
 
+        println(weapon)
         weapon.shot(d)
     }
 
@@ -82,7 +83,7 @@ class Player(position: Vector2) : Entity() {
 
     private fun setWeapon(type: WeaponsType) {
         Game.engine.removeEntity(weapon as Entity)
-        weapon = weapons[type] as AWeapon
+        weapon = weapons[type] as Weapon
         Game.engine.addEntity(weapon as Entity)
     }
 }

@@ -6,5 +6,6 @@ package wallhow.manvszombies.game.objects.models.weapons
 enum class WeaponsType {
     RifleGreen,
     RifleBlue,
-    RifleRed
+    RifleRed,
+    NyanLaser
 }

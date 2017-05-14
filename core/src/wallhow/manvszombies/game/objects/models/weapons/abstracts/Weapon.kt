@@ -16,11 +16,9 @@ interface Weapon : Component {
     var currentCharge : Int
     fun characteristic() : Characteristic
 
-    interface Characteristic {
-        var timeReload : Float
-        var maxCharge : Int
-        var speedCharge : Float
-        var fireRet : Float //Темп стрельбы
-        var damage: Float
-    }
+    data class Characteristic(var timeReload : Float,
+                              var maxCharge : Int,
+                              var speedCharge : Float,
+                              var fireRet : Float ,
+                              var damage: Float  )//Темп стрельбы
 }
