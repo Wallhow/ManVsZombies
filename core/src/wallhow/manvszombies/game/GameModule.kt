@@ -19,6 +19,7 @@ import com.google.inject.Binder
 import com.google.inject.Module
 import com.google.inject.Provides
 import com.google.inject.Singleton
+import wallhow.acentauri.ashley.action.ActionSystem
 import wallhow.acentauri.state.StateManager
 import wallhow.acentauri.utils.TTFFont
 import wallhow.acentauri.ashley.systems.*
@@ -28,6 +29,7 @@ import wallhow.manvszombies.game.objects.BotListener
 import wallhow.manvszombies.game.objects.CellListener
 import wallhow.manvszombies.game.objects.GameRecords
 import wallhow.manvszombies.game.objects.models.gun.GunSystem
+import wallhow.manvszombies.game.objects.models.weapons.LaserWeaponSystem
 import wallhow.manvszombies.game.states.StateGame
 import wallhow.manvszombies.game.systems.*
 
@@ -80,8 +82,10 @@ class GameModule(game: Game) : Module {
                 TaskSystem::class.java,
                 KickSystem::class.java,
                 DeleteSystem::class.java,
+                LaserWeaponSystem::class.java,
                 KickMobSystem::class.java,
                 ActionsSystem::class.java,
+                ActionSystem::class.java,
                 ShakeCellSystem::class.java
         ))
     }

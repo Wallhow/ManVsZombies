@@ -8,7 +8,7 @@ open class AWeapon : Entity(), Weapon {
 
     }
 
-    override fun shot(direction: Vector2) { }
+    override fun shot(direction: Vector2,point: Vector2) { }
 
     override fun reload() { }
 

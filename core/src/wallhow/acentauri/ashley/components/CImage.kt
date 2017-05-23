@@ -12,13 +12,17 @@ class CImage(var texture: TextureRegion,
              private val width_: Float = texture.regionWidth.toFloat(),private val height_: Float = texture.regionHeight.toFloat(),
              var frameWidth: Float = 0f, var frameHeight: Float = 0f) : Component {
     companion object : ComponentResolver<CImage>(CImage::class.java)
-    var scale = 1f
+
+    var scaleX = 1f
+    var scaleY = 1f
     var rotation = 0f
     var timeBetweenFrames = 0.1f // задержка между кадрами
     val frameCount: Int // кол-во кадров всего
     var frameSequence : IntArray
     var color: Color = Color.WHITE.cpy()
     var time = 0.0f
+    private var originX_ = width / 2
+    private var originY_ = height / 2
     private var textureFrames: Array<TextureRegion> = Array() // кадры анимации
     private var currentFrame = 0 // Текущий кадр
     private val countFrameWidth: Int // кол-во кадров по горизонтали
@@ -85,10 +89,20 @@ class CImage(var texture: TextureRegion,
     }
     fun isPlay() = animation
 
+    var scale : Float
+        set(value) { scaleX = value; scaleY = value }
+        get() { return if(scaleX==scaleY) scaleX else 1f }
     val width : Float
         get() = width_*scale
     val height : Float
         get() = height_*scale
+
+    var originX : Float
+        get() =  width / 2f
+        set(value) { originX_ = value }
+    var originY : Float
+        get() =  height / 2f
+        set(value) { originY_ = value }
 
 }
 

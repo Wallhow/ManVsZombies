@@ -43,9 +43,9 @@ class DrawImageSystem @Inject constructor(val batch: SpriteBatch,val camera: Ort
         }
         batch.color = it.color
         batch.draw(it.getFrame(), pos.x, pos.y,
-                (it.width * 0.5f), (it.height * 0.5f),
+                (it.originX), (it.originY),
                 it.width, it.height,
-                it.scale, it.scale,
+                it.scaleX, it.scaleY,
                 it.rotation)
         batch.color = Color.WHITE
 

@@ -39,7 +39,7 @@ open class Rifle(val player: Player) : AWeapon() {
     protected var bulletScale : Float = 1.5f
     protected var gunType = GunType.GREEN
 
-    override fun shot(direction: Vector2) {
+    override fun shot(direction: Vector2,point: Vector2) {
         if(!isReload && !isShot) {
             isShot = true
             currentCharge--

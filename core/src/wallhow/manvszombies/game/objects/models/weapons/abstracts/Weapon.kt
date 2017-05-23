@@ -10,7 +10,7 @@ import wallhow.acentauri.ashley.components.ComponentResolver
  */
 interface Weapon : Component {
     companion object : ComponentResolver<Weapon>(Weapon::class.java)
-    fun shot(direction: Vector2)
+    fun shot(direction: Vector2,point: Vector2)
     fun reload()
     var isReload : Boolean
     var currentCharge : Int

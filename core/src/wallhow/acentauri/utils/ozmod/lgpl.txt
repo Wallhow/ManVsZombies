@@ -256,7 +256,7 @@ Whether this is true is especially significant if the work can be
 linked without the Library, or if the work is itself a library.  The
 threshold for this to be true is not precisely defined by law.
 
-  If such an object file uses only numerical parameters, data
+  If such an object file uses only numerical param, data
 structure layouts and accessors, and small macros and small inline
 functions (ten lines or less in length), then the use of the object
 file is unrestricted, regardless of whether it is legally a derivative
@@ -356,7 +356,7 @@ terminated so long as such parties remain in full compliance.
 
   9. You are not required to accept this License, since you have not
 signed it.  However, nothing else grants you permission to modify or
-distribute the Library or its derivative works.  These actions are
+distribute the Library or its derivative works.  These sequence are
 prohibited by law if you do not accept this License.  Therefore, by
 modifying or distributing the Library (or any work based on the
 Library), you indicate your acceptance of this License to do so, and

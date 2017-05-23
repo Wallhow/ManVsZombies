@@ -52,6 +52,10 @@ val Entity.halfSize : Vector2
 val Entity.sprite : Sprite
     get() = CSprite[this].image
 
+val CImage.halfWidth : Float
+    get() = width*0.5f
+val CImage.halfHeight : Float
+    get() = height*0.5f
 /**
  * CollideBoxComponent
  */
