@@ -158,8 +158,11 @@ class Game(gameService: GameService) : CoreGame() {
     }
     override fun dispose() {
         audioPlayer.chipPlayer?.done()
-        dreamloSDK.leaderboard.saveInLocalStorage()
-        Game.injector.getInstance(GameRecords::class.java).flush()
+        if(Options.saveRecords) {
+            dreamloSDK.leaderboard.saveInLocalStorage()
+            Game.injector.getInstance(GameRecords::class.java).flush()
+        }
+
         super.dispose()
         pManager.dispose()
         VisUI.dispose()

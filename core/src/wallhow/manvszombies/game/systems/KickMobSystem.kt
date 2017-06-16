@@ -47,34 +47,42 @@ class KickMobSystem @Inject constructor() : IteratingSystem(Family.all(CKickMob:
 
     }
     private fun checkCollide(array: ImmutableArray<Entity>,entity: Entity) {
-        array.forEach {
-            val mob = Rectangle(it.position.x,it.position.y,it.width,it.height)
-            val bullet = Rectangle(entity.position.x,entity.position.y,entity.width,entity.height)
+        checkCollideAndKick(array,entity,CKickMob[entity].gunType.force)?.run {
+            entity.add(CDelete())
+        }
+    }
 
-            if(bullet.overlaps(mob)) {
-                CHealth[it].currentHealth-=CKickMob[entity].gunType.force
-                if(CHealth[it].currentHealth<=0) {
-                    val rip = Entity()
-                    rip.add(CPosition[it])
-                    rip.add(CImage(Game.atlas.findRegion("rip"),31f,13f,31f,13f).apply {
-                        val r =MathUtils.random(0,1)
+    companion object {
+        fun checkCollideAndKick(array: ImmutableArray<Entity>, bulletEntity: Entity, damage: Float) : Entity? {
+            array.forEach {
+                val mob = Rectangle(it.position.x,it.position.y,it.width,it.height)
+                val bullet = Rectangle(bulletEntity.position.x, bulletEntity.position.y, bulletEntity.width, bulletEntity.height)
 
-                        color = it.color.cpy()
-                        scale = it.scale
-                        if(r==1) {
-                            nextFrame()
-                            getFrame().flip(true, false)
-                        }
-                    })
-                    rip.add(CSequenceAction(8, CDeletAction(1f),CColorAction(0.5f, Color.WHITE.cpy()),CColorAction(0.5f, rip.color)))
-                    engine.addEntity(rip)
+                if(bullet.overlaps(mob)) {
+                    CHealth[it].currentHealth-=damage
+                    if(CHealth[it].currentHealth<=0) {
+                        val rip = Entity()
+                        rip.add(CPosition[it])
+                        rip.add(CImage(Game.atlas.findRegion("rip"),31f,13f,31f,13f).apply {
+                            val r =MathUtils.random(0,1)
+                            color = it.color.cpy()
+                            scale = it.scale
+                            if(r==1) {
+                                nextFrame()
+                                getFrame().flip(true, false)
+                            }
+                        })
+                        rip.add(CSequenceAction(8, CDeletAction(1f),CColorAction(0.5f, Color.WHITE.cpy()),CColorAction(0.5f, rip.color)))
+                        Game.engine.addEntity(rip)
 
-                    //Убираем моба из общего количества
-                    // Обробатываем его убийство
-                    Game.getDeadMobSignaler().dispatch(it as Bot)
+                        //Убираем моба из общего количества
+                        // Обробатываем его убийство
+                        Game.getDeadMobSignaler().dispatch(it as Bot)
+                    }
+                    return it
                 }
-                entity.add(CDelete())
             }
+            return null
         }
     }
 }

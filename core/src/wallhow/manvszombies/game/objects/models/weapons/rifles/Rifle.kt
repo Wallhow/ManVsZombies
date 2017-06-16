@@ -8,10 +8,10 @@ import wallhow.acentauri.ashley.components.CMovement
 import wallhow.acentauri.ashley.components.CPosition
 import wallhow.acentauri.ashley.components.extension.halfSize
 import wallhow.acentauri.ashley.components.extension.position
-import wallhow.acentauri.extension.log
 import wallhow.acentauri.utils.gdxSchedule
 import wallhow.manvszombies.game.Game
 import wallhow.manvszombies.game.components.CKickMob
+import wallhow.manvszombies.game.objects.log
 import wallhow.manvszombies.game.objects.models.Player
 import wallhow.manvszombies.game.objects.models.gun.GunType
 import wallhow.manvszombies.game.objects.models.weapons.abstracts.AWeapon

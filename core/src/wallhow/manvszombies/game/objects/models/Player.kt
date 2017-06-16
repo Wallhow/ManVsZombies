@@ -1,31 +1,18 @@
 package wallhow.manvszombies.game.objects.models
 
-import com.badlogic.ashley.core.Component
 import com.badlogic.ashley.core.Entity
-import com.badlogic.ashley.core.Family
-import com.badlogic.ashley.systems.IteratingSystem
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector2
 import wallhow.acentauri.ashley.components.CImage
-import wallhow.acentauri.ashley.components.CMovement
 import wallhow.acentauri.ashley.components.CPosition
-import wallhow.acentauri.ashley.components.ComponentResolver
 import wallhow.acentauri.ashley.components.extension.*
-import wallhow.acentauri.extension.log
 import wallhow.manvszombies.game.Game
-import wallhow.manvszombies.game.objects.models.gun.CGun
-import wallhow.manvszombies.game.components.CKickMob
-import wallhow.manvszombies.game.objects.Balance
-import wallhow.manvszombies.game.objects.models.gun.Gun
-import wallhow.manvszombies.game.objects.models.gun.GunType
+import wallhow.manvszombies.game.objects.log
 import wallhow.manvszombies.game.objects.models.weapons.*
-import wallhow.manvszombies.game.objects.models.weapons.abstracts.AWeapon
 import wallhow.manvszombies.game.objects.models.weapons.abstracts.Weapon
 import wallhow.manvszombies.game.objects.models.weapons.rifles.RifleBlue
 import wallhow.manvszombies.game.objects.models.weapons.rifles.RifleGreen
 import wallhow.manvszombies.game.objects.models.weapons.rifles.RifleRed
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Created by wallhow on 22.01.17.
@@ -49,7 +36,7 @@ class Player(position: Vector2) : Entity() {
             put(WeaponsType.RifleBlue, RifleBlue(this@Player))
             put(WeaponsType.NyanLaser, Laser(this@Player))
         }
-        weapon = weapons[WeaponsType.NyanLaser] as Weapon
+        weapon = weapons[WeaponsType.NyanLaser] as Laser
         Game.engine.addEntity(weapon as Entity)
     }
 

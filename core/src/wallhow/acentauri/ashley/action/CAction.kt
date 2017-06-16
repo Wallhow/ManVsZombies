@@ -3,7 +3,6 @@ package wallhow.acentauri.ashley.action
 import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.math.Interpolation
 import com.badlogic.gdx.utils.Array
-import com.badlogic.gdx.utils.FloatArray
 import wallhow.acentauri.ashley.components.ComponentResolver
 
 /**
@@ -44,6 +43,7 @@ class ActionSequence {
         fun pause()
         fun stop()
         fun restart()
+        fun restart(start: Float,end: Float)
     }
 }
 
@@ -92,6 +92,14 @@ abstract class DefAction(var time : Float,parameter : Parameter) : ActionSequenc
     }
 
     override fun restart() {
+        restart(param.start,param.end)
+    }
+
+    override fun restart(start: Float, end: Float) {
+        if(param.start != start || param.end != end) {
+            param.start = start
+            param.end = end
+        }
         ready = false
         currentTime = 0f
         currentData = param.start
